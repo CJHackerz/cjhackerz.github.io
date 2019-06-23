@@ -6,18 +6,18 @@
     <description>Recent content on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 06 May 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>hello hugo test post</title>
-      <link>/posts/hello-world/</link>
-      <pubDate>Sat, 22 Jun 2019 00:00:00 +0000</pubDate>
+      <title>Mqtt pwn</title>
+      <link>/posts/mqtt-pwn/</link>
+      <pubDate>Sun, 06 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>/posts/hello-world/</guid>
-      <description>Welcome to my website hello humble visitor</description>
+      <guid>/posts/mqtt-pwn/</guid>
+      <description>Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&amp;rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&amp;rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client.</description>
     </item>
     
     <item>
