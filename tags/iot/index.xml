@@ -6,10 +6,20 @@
     <description>Recent content in IoT on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 May 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 09 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/iot/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>UART using Bus Pirate</title>
+      <link>/posts/uart-buspirate/</link>
+      <pubDate>Tue, 09 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/uart-buspirate/</guid>
+      <description>Introduction UART stands for Universal Asynchronous Receiver/Transmitter. It&amp;rsquo;s not a communication protocol like SPI and I2C, but rather a physical circuit which transmits and receives serial data.
+UART transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred.</description>
+    </item>
     
     <item>
       <title>Mqtt pwn</title>
