@@ -3,56 +3,56 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/</loc>
+    <loc>https://cjhackerz.net/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/cybersecurity/</loc>
+    <loc>https://cjhackerz.net/tags/cybersecurity/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/iot/</loc>
+    <loc>https://cjhackerz.net/tags/iot/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/posts/</loc>
+    <loc>https://cjhackerz.net/posts/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>https://cjhackerz.net/tags/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/posts/uart-buspirate/</loc>
+    <loc>https://cjhackerz.net/posts/uart-buspirate/</loc>
     <lastmod>2019-04-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/posts/mqtt-pwn/</loc>
+    <loc>https://cjhackerz.net/posts/mqtt-pwn/</loc>
     <lastmod>2018-05-06T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/about/</loc>
+    <loc>https://cjhackerz.net/about/</loc>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>https://cjhackerz.net/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/contact/</loc>
+    <loc>https://cjhackerz.net/contact/</loc>
   </url>
   
 </urlset>

@@ -2,50 +2,50 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Chirag Jariwala</title>
-    <link>/</link>
+    <link>https://cjhackerz.net/</link>
     <description>Recent content on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 09 Apr 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://cjhackerz.net/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>UART using Bus Pirate</title>
-      <link>/posts/uart-buspirate/</link>
+      <link>https://cjhackerz.net/posts/uart-buspirate/</link>
       <pubDate>Tue, 09 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/posts/uart-buspirate/</guid>
+      <guid>https://cjhackerz.net/posts/uart-buspirate/</guid>
       <description>Introduction UART stands for Universal Asynchronous Receiver/Transmitter. It&amp;rsquo;s not a communication protocol like SPI and I2C, but rather a physical circuit which transmits and receives serial data.
 UART transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred.</description>
     </item>
     
     <item>
       <title>Mqtt pwn</title>
-      <link>/posts/mqtt-pwn/</link>
+      <link>https://cjhackerz.net/posts/mqtt-pwn/</link>
       <pubDate>Sun, 06 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>/posts/mqtt-pwn/</guid>
+      <guid>https://cjhackerz.net/posts/mqtt-pwn/</guid>
       <description>Previously I was working on university minor project (IPS system for IoT devices). So, I have picked up CVE-2017-7650 to define snort rule for it. I was thinking how someone can leverage this silly vulnerability and I asked my self in current IoT space what kind of data can compromise user&amp;rsquo;s privacy. Yes, it is GPS data. I am big fan of Python programming and wanted to use it&amp;rsquo;s power, so I wrote to small python scripts which gathers list of IP addresses from Shodan API, tries to connect on those IPs as MQTT client.</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>/about/</link>
+      <link>https://cjhackerz.net/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/about/</guid>
+      <guid>https://cjhackerz.net/about/</guid>
       <description>root@cjhackerz-net:~# whoami I am Chirag Jariwala, cyber security analyst and IoT security researcher. I have good understanding of Linux systems and devops. I know Python and Go programming.
 Biggest Plus point about me is that I can learn and adapt any latest technology which now being used at industrial level into real life application! I am always hungry to learn new and latest stuff out there. Best part of me is that I never hesitate to teach new things that I know and others don&amp;rsquo;t know.</description>
     </item>
     
     <item>
       <title>Contact</title>
-      <link>/contact/</link>
+      <link>https://cjhackerz.net/contact/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/contact/</guid>
+      <guid>https://cjhackerz.net/contact/</guid>
       <description> Email: cjhackerz443@protonmail.com LinkedIn: https://linkedin.com/in/cjhackerz GitHub: https://github.com/cjhackerz KeyBase: https://keybase.io/cjhackerz  </description>
     </item>
     
