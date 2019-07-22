@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hardware on Chirag Jariwala</title>
+    <link>https://cjhackerz.net/tags/hardware/</link>
+    <description>Recent content in Hardware on Chirag Jariwala</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://cjhackerz.net/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Reading data from EEPROM without desoldering</title>
+      <link>https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/</guid>
+      <description>Introduction In IoT/Hardware security it is common practice of dumping firmware/bootloader data inorder to perform reverse engineering for closed source system applications.
+Well known easiest way is to download .bin/.zip (packed firmware) files from device manufacturer&amp;rsquo;s website which they provide to end users for firmware upgrade operations. And later us hackers/security researchers throw these files to reverse engineering softwares such as binwalk to check it&amp;rsquo;s contents and extract the needed stuff.</description>
+    </item>
+    
+  </channel>
+</rss>

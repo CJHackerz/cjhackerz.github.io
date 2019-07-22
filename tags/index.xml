@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,16 +14,25 @@
     <item>
       <title>Cybersecurity</title>
       <link>https://cjhackerz.net/tags/cybersecurity/</link>
-      <pubDate>Tue, 09 Apr 2019 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/cybersecurity/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Hardware</title>
+      <link>https://cjhackerz.net/tags/hardware/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/hardware/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>IoT</title>
       <link>https://cjhackerz.net/tags/iot/</link>
-      <pubDate>Tue, 09 Apr 2019 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/iot/</guid>
       <description></description>

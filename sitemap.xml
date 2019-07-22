@@ -4,31 +4,42 @@
   
   <url>
     <loc>https://cjhackerz.net/</loc>
-    <lastmod>2019-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/tags/cybersecurity/</loc>
-    <lastmod>2019-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/hardware/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/tags/iot/</loc>
-    <lastmod>2019-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/posts/</loc>
-    <lastmod>2019-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cjhackerz.net/tags/</loc>
-    <lastmod>2019-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
