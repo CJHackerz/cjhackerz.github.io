@@ -7,24 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Cybersecurity</title>
-      <link>https://cjhackerz.net/tags/cybersecurity/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      <title>Automotive</title>
+      <link>https://cjhackerz.net/tags/automotive/</link>
+      <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://cjhackerz.net/tags/cybersecurity/</guid>
+      <guid>https://cjhackerz.net/tags/automotive/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hardware</title>
       <link>https://cjhackerz.net/tags/hardware/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/hardware/</guid>
       <description></description>
@@ -33,9 +33,18 @@
     <item>
       <title>IoT</title>
       <link>https://cjhackerz.net/tags/iot/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/iot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cybersecurity</title>
+      <link>https://cjhackerz.net/tags/cybersecurity/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/cybersecurity/</guid>
       <description></description>
     </item>
     

@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CAN-bus protocol pentesting and forensics</title>
+      <link>https://cjhackerz.net/posts/can-bus_protocol_pentesting/</link>
+      <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/can-bus_protocol_pentesting/</guid>
+      <description>Introduction CAN (Controller Area Network) is a vehicle bus protocol standard which allows microcontrollers and ECU (electronic control units) to communicate which each other without a host computer. It is a message-based protocol, designed originally for multiplex electrical wiring within automobiles to save on copper, but can also be used in many other contexts. But why CAN you may ask, because it&amp;rsquo;s low-cost error less since via single CAN interface ECU can communicate with each through the centralized system with less wiring involved and data is transferred over digital signal instead of analog so it reduces chances of error occurrence.</description>
+    </item>
     
     <item>
       <title>Reading data from EEPROM without desoldering</title>

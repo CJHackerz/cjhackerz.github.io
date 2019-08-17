@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Hardware on Chirag Jariwala</title>
-    <link>https://cjhackerz.net/tags/hardware/</link>
-    <description>Recent content in Hardware on Chirag Jariwala</description>
+    <title>Automotive on Chirag Jariwala</title>
+    <link>https://cjhackerz.net/tags/automotive/</link>
+    <description>Recent content in Automotive on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
     <lastBuildDate>Sat, 17 Aug 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://cjhackerz.net/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://cjhackerz.net/tags/automotive/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,16 +19,6 @@
       
       <guid>https://cjhackerz.net/posts/can-bus_protocol_pentesting/</guid>
       <description>Introduction CAN (Controller Area Network) is a vehicle bus protocol standard which allows microcontrollers and ECU (electronic control units) to communicate which each other without a host computer. It is a message-based protocol, designed originally for multiplex electrical wiring within automobiles to save on copper, but can also be used in many other contexts. But why CAN you may ask, because it&amp;rsquo;s low-cost error less since via single CAN interface ECU can communicate with each through the centralized system with less wiring involved and data is transferred over digital signal instead of analog so it reduces chances of error occurrence.</description>
-    </item>
-    
-    <item>
-      <title>Reading data from EEPROM without desoldering</title>
-      <link>https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/</guid>
-      <description>Introduction In IoT/Hardware security it is common practice of dumping firmware/bootloader data inorder to perform reverse engineering for closed source system applications.
-Well known easiest way is to download .bin/.zip (packed firmware) files from device manufacturer&amp;rsquo;s website which they provide to end users for firmware upgrade operations. And later us hackers/security researchers throw these files to reverse engineering softwares such as binwalk to check it&amp;rsquo;s contents and extract the needed stuff.</description>
     </item>
     
   </channel>
