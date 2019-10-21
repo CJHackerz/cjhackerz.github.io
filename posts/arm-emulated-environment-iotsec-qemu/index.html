@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explaination about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support."/>
+<meta name="description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support."/>
 <meta name="keywords" content="cjhackerz"/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/" />
@@ -29,7 +29,7 @@
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala — Cyber security analyst and IoT security researcher" />
-<meta name="twitter:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explaination about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
+<meta name="twitter:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
 <meta name="twitter:site" content="https://cjhackerz.net" />
 <meta name="twitter:creator" content="CJHackerz" />
 <meta name="twitter:image" content="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png">
@@ -38,7 +38,7 @@
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala — Cyber security analyst and IoT security researcher">
-<meta property="og:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explaination about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
+<meta property="og:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
 <meta property="og:url" content="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/" />
 <meta property="og:site_name" content="ARM and MIPS emulated lab setup for IoT security in Qemu" />
 <meta property="og:image" content="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png">
@@ -146,7 +146,7 @@
 
 <h2 id="backstory">Backstory</h2>
 
-<p>After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&rsquo;s exact reason for wirting this article giving clear explaination about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support. This tutorial is combination of all other tutorial and documentation that I read to achieve this kind of straight forward setup.</p>
+<p>After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support. This tutorial is combination of all other tutorial and documentation that I read to achieve this kind of straight forward setup.</p>
 
 <h2 id="introduction">Introduction</h2>
 
@@ -609,6 +609,8 @@ qemu-system-mipsel -M malta -m 2048 \
 <h2 id="the-end">The End</h2>
 
 <p>Thanks you for taking your time and going through this detailed tutorial. If you like it don&rsquo;t forget to share on any social media you like, it does really helps this blog. Don&rsquo;t forget to check <a href="https://cjhackerz.net/contact">contact</a> section of this blog to reach me out over social media for any queries.</p>
+
+<h2 id="credits">Credits</h2>
 
   </div>
   

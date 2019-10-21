@@ -18,7 +18,7 @@
       <pubDate>Thu, 26 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/</guid>
-      <description>Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explaination about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support.</description>
+      <description>Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support.</description>
     </item>
     
     <item>
