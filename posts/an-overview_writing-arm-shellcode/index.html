@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>An overview on writing ARM shellcode :: Chirag Jariwala — Cyber security analyst and IoT security researcher</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="\0x53\0x54\0x41\0x52\0x54 Last month was really productive month that I had in my life after college graduation, I end up learning so many new things also did hands on session on CAN-bus forensics with one of the oldest hacker community called Garage4Hackers. Alongside that I learned a lot about ARM architecture from Azeria with her blog. Also lot&amp;rsquo;s stuff related to learning ARM assembly is available online that&amp;rsquo;s why I am not gonna write entire blog series ARM assembly instead in this article I will just walkthrough ARM shellcoding subject from an introduction point of view."/>
+<meta name="keywords" content="ARM, shellcode, ARM exploit development, ARM shellcode writing"/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/" />
+
+
+<link rel="stylesheet" href="https://cjhackerz.net/assets/style.css">
+
+  <link rel="stylesheet" href="https://cjhackerz.net/assets/red.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cjhackerz.net/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://cjhackerz.net/img/favicon/red.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="An overview on writing ARM shellcode :: Chirag Jariwala — Cyber security analyst and IoT security researcher" />
+<meta name="twitter:description" content="\0x53\0x54\0x41\0x52\0x54 Last month was really productive month that I had in my life after college graduation, I end up learning so many new things also did hands on session on CAN-bus forensics with one of the oldest hacker community called Garage4Hackers. Alongside that I learned a lot about ARM architecture from Azeria with her blog. Also lot&amp;rsquo;s stuff related to learning ARM assembly is available online that&amp;rsquo;s why I am not gonna write entire blog series ARM assembly instead in this article I will just walkthrough ARM shellcoding subject from an introduction point of view." />
+<meta name="twitter:site" content="https://cjhackerz.net" />
+<meta name="twitter:creator" content="CJHackerz" />
+<meta name="twitter:image" content="https://cjhackerz.net/img/2019-10-22-112630_1920x1055_scrot.png">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="An overview on writing ARM shellcode :: Chirag Jariwala — Cyber security analyst and IoT security researcher">
+<meta property="og:description" content="\0x53\0x54\0x41\0x52\0x54 Last month was really productive month that I had in my life after college graduation, I end up learning so many new things also did hands on session on CAN-bus forensics with one of the oldest hacker community called Garage4Hackers. Alongside that I learned a lot about ARM architecture from Azeria with her blog. Also lot&amp;rsquo;s stuff related to learning ARM assembly is available online that&amp;rsquo;s why I am not gonna write entire blog series ARM assembly instead in this article I will just walkthrough ARM shellcoding subject from an introduction point of view." />
+<meta property="og:url" content="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/" />
+<meta property="og:site_name" content="An overview on writing ARM shellcode" />
+<meta property="og:image" content="https://cjhackerz.net/img/2019-10-22-112630_1920x1055_scrot.png">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2019-10-22 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    CJHackerz.Net
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/contact">Contact</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/contact">Contact</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/">An overview on writing ARM shellcode</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-10-22
+    </span>
+    
+    
+    <span class="post-author">::
+      CJHackerz
+    </span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://cjhackerz.net/tags/iot/">IoT</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/arm/">ARM</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/exploit-dev/">Exploit-dev</a>&nbsp;
+    
+  </span>
+  
+
+  
+  <img src="https://cjhackerz.net/img/2019-10-22-112630_1920x1055_scrot.png" class="post-cover" />
+  
+
+  <div class="post-content">
+    
+
+<h2 id="0x53-0x54-0x41-0x52-0x54">\0x53\0x54\0x41\0x52\0x54</h2>
+
+<p>Last month was really productive month that I had in my life after college graduation, I end up learning so many new things also did hands on session on <a href="https://cjhackerz.net/posts/can-bus_protocol_pentesting/">CAN-bus forensics</a> with one of the oldest hacker community called <a href="http://garage4hackers.com">Garage4Hackers</a>. Alongside that I learned a lot about ARM architecture from <a href="https://twitter.com/fox0x01">Azeria</a> with her <a href="https://azeria-labs.com/writing-arm-assembly-part-1/">blog</a>. Also lot&rsquo;s stuff related to learning ARM assembly is available online that&rsquo;s why I am not gonna write entire blog series ARM assembly instead in this article I will just walkthrough ARM shellcoding subject from an introduction point of view.</p>
+
+<p>To understand working of shellcode in this blog post, first we will look into some basics of ARM and ELF structure in fast track manner. Let&rsquo;s have look at diffrance between x86 and ARM registers in table given below.</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">ARM vs x86 comparison table</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th align="left">ARM</th>
+<th align="left">Usage</th>
+<th align="left">x86</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">R0-R5</td>
+<td align="left">General purpose register [Useful as function arguments][R0 often holds return value of function call]</td>
+<td align="left">EAX, EBX, ECX, EDX, ESI, EDI</td>
+</tr>
+
+<tr>
+<td align="left">R6-R10</td>
+<td align="left">General purpose register [R7 - Holds syscall number in linux]</td>
+<td align="left">-</td>
+</tr>
+
+<tr>
+<td align="left">R11(FP)</td>
+<td align="left">Frame pointer</td>
+<td align="left">EBP</td>
+</tr>
+
+<tr>
+<td align="left"></td>
+<td align="left"><strong>Special Purpose Registers</strong></td>
+<td align="left"></td>
+</tr>
+
+<tr>
+<td align="left">R12</td>
+<td align="left">Intra Procedural Call</td>
+<td align="left">-</td>
+</tr>
+
+<tr>
+<td align="left">R13</td>
+<td align="left">Stack Pointer</td>
+<td align="left">ESP</td>
+</tr>
+
+<tr>
+<td align="left">R14(LR)</td>
+<td align="left">Link Register [Holds return address of <a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka13785.html">leaf function</a>]</td>
+<td align="left">-</td>
+</tr>
+
+<tr>
+<td align="left">R15(PC)</td>
+<td align="left">Program counter</td>
+<td align="left">EIP</td>
+</tr>
+
+<tr>
+<td align="left">CSPR</td>
+<td align="left">Current Program Status Register</td>
+<td align="left">EFLASGS</td>
+</tr>
+</tbody>
+</table>
+
+<p>To write shellcode first we need to know meaning of various kinds of sections for ELF (<a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">Executable Linkable Format</a>).</p>
+
+<ul>
+<li><strong>.text</strong> – where program execution instructions are stored in
+architecture specific assembly language understood by target CPU</li>
+<li><strong>.data</strong> – Stack, Heap, local and global variable storage</li>
+<li><strong>.plt</strong> – process linkage table which calls external libraries and functions
+to be loaded by dynamic loader (ld.so/ld-linux.so) and addresses of
+those libraries and functions gets addresses gets added to .got</li>
+<li><strong>.got</strong> – global offset table, it holds addresses of functions to be called
+during program execution (very important to know while to
+ret2libc/ROP)</li>
+</ul>
+
+<p>So, shellcode today we will be making one is for forkbomb. Fork Bomb is a program which harms a system by making it run out of memory. It forks processes infinitely to fill memory. The fork bomb is a form of denial-of-service (DoS) attack against a Linux based system. Basically creating new process in infite loop.</p>
+
+<p>ARM has two modes of assembly 32-bit ARM and 16-bit THUMB mode which was supported upto ARMv6 CPUs. For shellcode wirting it is preffered method to write it in THUMB instruction mode since it reduces occurrence of null bytes (0x00) which results size reduction in hex output of shellcode. Why because if we talk about making exploits for IoT devices most of them have very limited memory resources so small shellcode size will help to overcome those constrains. Making your shellcode as small as possible has been a popular choice in x86 exploit development as well.</p>
+
+<p>For playing around with ARM assembly and reverse engineering you can check out my previous blog post on ARM/MIPS Qemu lab setup with complete networking support.</p>
+
+<p>Enough jumping around into concepts now let&rsquo;s have look at actual shell code.</p>
+
+<pre><code class="language-wasm">.text
+.global _start
+
+_start:
+	.code 32    //ARM mode
+	ADD R3, PC, #1	//Switching to Thumb mode
+	BX R3
+
+	.code 16
+	_loop:
+		EOR R7, R7 //R7 = 0
+		ADD R7, #2	//Syscall to fork()
+		SVC #1
+		MOV R8, R8 //NOP
+		BL _loop
+</code></pre>
+
+<p>As you can see all of our insturctions goes to .text section and .global will execute instructions inside _start function label. We add 1 to program counter address and store result to R3 (<strong>ADD R3, PC, #1</strong>). To switch to THUMB mode we Branch Exchange (BX) to address store inside R3 in as result of previous instruction.</p>
+
+<p>_loop is just a label where we will Branch Link (or you can say jump to it) to execute all instruction again and again. EOR is for XOR. So, R7 (+) R7 = 0, why because to avoid null byte we don&rsquo;t directly move zero to R7 in output shellcode. We are resetting value of R7 to zero in start of the loop since next instruction is going to be ADD where we add 2 to R7. 2 is syscall number for fork(). You can find syscalls numbers in unistd-common.h file.</p>
+
+<pre><code class="language-bash">cat /usr/include/arm-linux-gnueabihf/asm/unistd-common.h
+</code></pre>
+
+<p>Given path in command works for ARMv7 systems such as RaspberryPi, it may vary according to 32-bit/64-bit(aarch64/ARMv8).</p>
+
+<p>With <strong>SVC #1</strong> (Supervisor Call) which calls fork() syscall and creates new process. Notice we added <strong>MOV R8, R8</strong> (NOP - No operation) for 16-bit THUMB alignment. And in last we Branch Link to _loop to execute all same stuff.</p>
+
+<p>To know more about all other instruction sets in ARM you can check out this <a href="http://infocenter.arm.com/help/topic/com.arm.doc.qrc0001l/">document</a></p>
+
+<h2 id="demo">DEMO</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/Ux7zrap-VCQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+<p><strong>Note:</strong> While writing this blog I come to my silly mistake which is using <strong>MOV</strong> instead of <strong>ADD</strong> since it makes no sense to use <strong>EOR R7, R7</strong> before <strong>MOV</strong> instruction since it will always overwrite value to 2 and no need for reset. For this post it was my intension to point out while making shellcode you avoid null bytes at all costs wherever it&rsquo;s possible.</p>
+
+<h2 id="resource-to-learn-arm-assembly">Resource to Learn ARM assembly</h2>
+
+<ul>
+<li><a href="https://www.youtube.com/user/pr0Hacks2014">Billy Ellis - YouTube</a></li>
+<li><a href="https://azeria-labs.com/">Azeria Labs</a></li>
+<li><a href="https://www.youtube.com/watch?v=ViNnfoE56V8">Assembly Language Tutorial on RaspberryPi by Derek Banas</a></li>
+<li><a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0068b/CIHEDHIF.html">ARM official docs</a></li>
+</ul>
+
+<p>That&rsquo;s it I hope you enjoyed this article, don&rsquo;t forget to share it on your favourite social media platform so more and more people can benifit from it.</p>
+
+<h2 id="0x45-0x4e-0x44">\0x45\0x4e\0x44</h2>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/">
+          <span class="button__text">ARM and MIPS emulated lab setup for IoT security in Qemu</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© 2019, All rights reserved to Chirag Jariwala</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://cjhackerz.net/assets/main.js"></script>
+<script src="https://cjhackerz.net/assets/prism.js"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+
+  
+</div>
+
+</body>
+</html>

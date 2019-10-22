@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Thu, 26 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>An overview on writing ARM shellcode</title>
+      <link>https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/</link>
+      <pubDate>Tue, 22 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/</guid>
+      <description>\0x53\0x54\0x41\0x52\0x54 Last month was really productive month that I had in my life after college graduation, I end up learning so many new things also did hands on session on CAN-bus forensics with one of the oldest hacker community called Garage4Hackers. Alongside that I learned a lot about ARM architecture from Azeria with her blog. Also lot&amp;rsquo;s stuff related to learning ARM assembly is available online that&amp;rsquo;s why I am not gonna write entire blog series ARM assembly instead in this article I will just walkthrough ARM shellcoding subject from an introduction point of view.</description>
+    </item>
     
     <item>
       <title>ARM and MIPS emulated lab setup for IoT security in Qemu</title>

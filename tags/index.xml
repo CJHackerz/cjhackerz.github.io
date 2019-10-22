@@ -7,15 +7,33 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Thu, 26 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>ARM</title>
+      <link>https://cjhackerz.net/tags/arm/</link>
+      <pubDate>Tue, 22 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/arm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exploit-dev</title>
+      <link>https://cjhackerz.net/tags/exploit-dev/</link>
+      <pubDate>Tue, 22 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/exploit-dev/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>IoT</title>
       <link>https://cjhackerz.net/tags/iot/</link>
-      <pubDate>Thu, 26 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 22 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/iot/</guid>
       <description></description>
