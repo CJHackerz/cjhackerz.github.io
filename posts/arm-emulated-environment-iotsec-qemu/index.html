@@ -6,10 +6,25 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support."/>
-<meta name="keywords" content="cjhackerz"/>
-<meta name="robots" content="noodp"/>
+<meta name="description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
+<meta name="keywords" content="cjhackerz" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
 
 
 <link rel="stylesheet" href="https://cjhackerz.net/assets/style.css">
@@ -23,21 +38,18 @@
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cjhackerz.net/img/apple-touch-icon-144-precomposed.png">
 
-<link rel="shortcut icon" href="https://cjhackerz.net/img/favicon/red.png">
+  <link rel="shortcut icon" href="https://cjhackerz.net/img/favicon/red.png">
 
 
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala — Cyber security analyst and IoT security researcher" />
-<meta name="twitter:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
-<meta name="twitter:site" content="https://cjhackerz.net" />
+
 <meta name="twitter:creator" content="CJHackerz" />
-<meta name="twitter:image" content="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png">
 
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala — Cyber security analyst and IoT security researcher">
+<meta property="og:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala">
 <meta property="og:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
 <meta property="og:url" content="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/" />
 <meta property="og:site_name" content="ARM and MIPS emulated lab setup for IoT security in Qemu" />
@@ -45,7 +57,9 @@
 <meta property="og:image:width" content="2048">
 <meta property="og:image:height" content="1024">
 
-<meta property="article:published_time" content="2019-09-26 00:00:00 &#43;0000 UTC" />
+
+  <meta property="article:published_time" content="2019-09-26 00:00:00 &#43;0000 UTC" />
+
 
 
 
@@ -61,7 +75,7 @@
 <body class="">
 
 
-<div class="container center">
+<div class="container center headings--one-size">
 
   <header class="header">
   <div class="header__inner">
@@ -144,19 +158,12 @@
   <img src="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png" class="post-cover" />
   
 
-  <div class="post-content">
-    
-
-<h2 id="backstory">Backstory</h2>
-
+  <div class="post-content"><div>
+        <h2 id="backstory">Backstory<a href="#backstory" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support. This tutorial is combination of all other tutorial and documentation that I read to achieve this kind of straight forward setup.</p>
-
-<h2 id="introduction">Introduction</h2>
-
+<h2 id="introduction">Introduction<a href="#introduction" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>QEMU is a open source virtual machine software it emulates the machine&rsquo;s processor through dynamic binary translation and provides a set of different hardware and device models for the machine, enabling it to run a variety of guest operating systems.</p>
-
 <p>Before continuing this tutorial you will need to install certain packages in your system. I am targeting kali linux users for this tutorial since it&rsquo;s major choice among cyber security folks. It is also a debian based distro so it should also work on other debian based distro as well for example Ubuntu and Parrot OS. See the table below to know the usage of each package.</p>
-
 <table>
 <thead>
 <tr>
@@ -164,48 +171,37 @@
 <th align="left">Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td align="left">qemu</td>
 <td align="left">Base package</td>
 </tr>
-
 <tr>
 <td align="left">qemu-system</td>
 <td align="left">System emulation</td>
 </tr>
-
 <tr>
 <td align="left">libguestfs-tools</td>
 <td align="left">To work with guest/VM&rsquo;s filesystem</td>
 </tr>
-
 <tr>
 <td align="left">bridge-utils</td>
 <td align="left">For bridge management of guest iface</td>
 </tr>
-
 <tr>
 <td align="left">dnsmasq</td>
 <td align="left">DHCP server for our NAT network</td>
 </tr>
-
 <tr>
 <td align="left">virt-manager</td>
 <td align="left">GUI Qemu manager and display window</td>
 </tr>
 </tbody>
 </table>
-
 <p><strong>Install commmand for Kali/Debian:</strong></p>
-
-<pre><code class="language-bash">apt update &amp;&amp; apt install qemu qemu-system libguestfs-tools bridge-utils dnsmasq virt-manager -y
-</code></pre>
-
-<p>After installation to see list of supported emulation boards for your target architecture you can try following commands:</p>
-
-<pre><code class="language-console">▶ qemu-system-arm -M help
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apt update <span style="color:#f92672">&amp;&amp;</span> apt install qemu qemu-system libguestfs-tools bridge-utils dnsmasq virt-manager -y
+</code></pre></div><p>After installation to see list of supported emulation boards for your target architecture you can try following commands:</p>
+<pre><code class="language-console" data-lang="console">▶ qemu-system-arm -M help
 Supported machines are:
 akita                Sharp SL-C1000 (Akita) PDA (PXA270)
 ast2500-evb          Aspeed AST2500 EVB (ARM1176)
@@ -214,71 +210,45 @@ canon-a1100          Canon PowerShot A1100 IS
 cheetah              Palm Tungsten|E aka. Cheetah PDA (OMAP310)
 collie               Sharp SL-5500 (Collie) PDA (SA-1110)
 ...
-</code></pre>
-
-<pre><code class="language-console">▶ qemu-system-mipsel -M help
+</code></pre><pre><code class="language-console" data-lang="console">▶ qemu-system-mipsel -M help
 Supported machines are:
 malta                MIPS Malta Core LV (default)
 mips                 mips r4k platform
 mipssim              MIPS MIPSsim platform
 none                 empty machine
-</code></pre>
-
-<p>In this tutorial we will use ARM-virt and MIPS-malta board since both allows us to have more ram than 1GB.</p>
-
-<h2 id="installation">Installation</h2>
-
+</code></pre><p>In this tutorial we will use ARM-virt and MIPS-malta board since both allows us to have more ram than 1GB.</p>
+<h2 id="installation">Installation<a href="#installation" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>First we need to get installation files online. We will need to of them, base kernel and initram disk which holds our actual installer.</p>
-
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-bash">#Base kernel
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Base kernel</span>
 wget http://http.us.debian.org/debian/dists/buster/main/installer-armhf/current/images/netboot/vmlinuz
 
-#Initramfs
+<span style="color:#75715e">#Initramfs</span>
 wget http://http.us.debian.org/debian/dists/buster/main/installer-armhf/current/images/netboot/initrd.gz
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-bash">wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/images/malta/netboot/vmlinux-4.19.0-6-4kc-malta
+</code></pre></div><p><strong>MIPSEL</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/images/malta/netboot/vmlinux-4.19.0-6-4kc-malta
 
 wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/images/malta/netboot/initrd.gz
-</code></pre>
-
-<p>As time of writing this article buster is latest debian distro which will reach end of life by 2022 check out more <a href="https://wiki.debian.org/DebianReleases">here</a>.</p>
-
+</code></pre></div><p>As time of writing this article buster is latest debian distro which will reach end of life by 2022 check out more <a href="https://wiki.debian.org/DebianReleases">here</a>.</p>
 <p>Now we need to create virtual hard drive for Qemu in qcow2 file format(Qemu copy on write). Because it allows us to create snapshot <em>qemu-img create -f qcow2 -b &hellip;</em> command.</p>
-
-<pre><code class="language-bash">qemu-img create -f qcow2 hda.qcow2 20G
-</code></pre>
-
-<p>Above command will create empty qcow2 disk with max storage upto 20GB</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-img create -f qcow2 hda.qcow2 20G
+</code></pre></div><p>Above command will create empty qcow2 disk with max storage upto 20GB</p>
 <p>Now time to boot our installer from command line window.</p>
-
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-bash">qemu-system-arm -M virt -m 2048 -smp 2 \
--kernel vmlinuz -initrd initrd.gz \
--drive if=none,file=hda.qcow2,id=hd0 \
--device virtio-blk-device,drive=hd0 \
--netdev user,id=net0 \
--device virtio-net-device,netdev=net0 \
--nographic -no-reboot
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-bash">qemu-system-mipsel -M mips -m 2048
--kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.gz \ 
--hda hda.qcow2 -append &quot;root=/dev/ram console=ttyS0&quot; \ 
--nic user \
--nographic -no-reboot
-</code></pre>
-
-<p>-m option is to set RAM in MB and with -smp we dedicate number of host CPU cores to VM (malta only supports 1), -nogprahic output everything in terminal and -no-reboot prevents reboot after installation shutdown. After sucessful boot you will be presented with setup screen below. Just go through all setup prompt as usual. We are gonna use default <a href="https://wiki.qemu.org/Documentation/Networking#User_Networking_.28SLIRP.29">SLIRP</a> user networking backend for our guest machines during installation. In upcoming steps we will see how to setup NAT network which will allow communication between guest&lt;-&gt;host and guest&lt;-&gt;guest. Please note that it will take more than hour in setup depending on your host system specs.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M virt -m <span style="color:#ae81ff">2048</span> -smp <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel vmlinuz -initrd initrd.gz <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-drive <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>none,file<span style="color:#f92672">=</span>hda.qcow2,id<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-device virtio-blk-device,drive<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-netdev user,id<span style="color:#f92672">=</span>net0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-device virtio-net-device,netdev<span style="color:#f92672">=</span>net0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-nographic -no-reboot
+</code></pre></div><p><strong>MIPSEL</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-mipsel -M mips -m <span style="color:#ae81ff">2048</span>
+-kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.gz <span style="color:#ae81ff">\ </span>
+-hda hda.qcow2 -append <span style="color:#e6db74">&#34;root=/dev/ram console=ttyS0&#34;</span> <span style="color:#ae81ff">\ </span>
+-nic user <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-nographic -no-reboot
+</code></pre></div><p>-m option is to set RAM in MB and with -smp we dedicate number of host CPU cores to VM (malta only supports 1), -nogprahic output everything in terminal and -no-reboot prevents reboot after installation shutdown. After sucessful boot you will be presented with setup screen below. Just go through all setup prompt as usual. We are gonna use default <a href="https://wiki.qemu.org/Documentation/Networking#User_Networking_.28SLIRP.29">SLIRP</a> user networking backend for our guest machines during installation. In upcoming steps we will see how to setup NAT network which will allow communication between guest&lt;-&gt;host and guest&lt;-&gt;guest. Please note that it will take more than hour in setup depending on your host system specs.</p>
 
   <figure class="center" >
     <img src="/img/debian_mips_qemu_di_language.png"  alt="screenshot"   style="border-radius: 10px;"  />
@@ -288,12 +258,9 @@ wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/
   </figure>
 
 
-
 <p>once setup is complete it will give you warning like this.</p>
-
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-console">+-----------------| [!] Continue without boot loader |------------------+
+<pre><code class="language-console" data-lang="console">+-----------------| [!] Continue without boot loader |------------------+
 |                                                                       |
 |                       No boot loader installed                        |
 | No boot loader has been installed, either because you chose not to or |
@@ -305,11 +272,8 @@ wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/
 |                              &lt;Continue&gt;                               |
 |                                                                       |
 +-----------------------------------------------------------------------+  
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-console">+-----------------| [!] Continue without boot loader |------------------+
+</code></pre><p><strong>MIPSEL</strong></p>
+<pre><code class="language-console" data-lang="console">+-----------------| [!] Continue without boot loader |------------------+
 |                                                                       |
 |                       No boot loader installed                        |
 | No boot loader has been installed, either because you chose not to or |
@@ -321,15 +285,10 @@ wget http://debian.osuosl.org/debian/dists/buster/main/installer-mipsel/current/
 |                              &lt;Continue&gt;                               |
 |                                                                       |
 +-----------------------------------------------------------------------+ 
-</code></pre>
-
-<p>Warning message is pretty straight forward after installation we have to append correct kernel argument value for root partition with <em>-append=&ldquo;root=[whatever_indicated_in_warning]&rdquo;</em>. before that we need to extract installed kernel and initram disk from qcow2 disk image into current directory. Here we will take advantages of utilities provided by libguestfs-tools package.</p>
-
+</code></pre><p>Warning message is pretty straight forward after installation we have to append correct kernel argument value for root partition with <em>-append=&quot;root=[whatever_indicated_in_warning]&quot;</em>. before that we need to extract installed kernel and initram disk from qcow2 disk image into current directory. Here we will take advantages of utilities provided by libguestfs-tools package.</p>
 <p>First we will use <strong>virt-ls</strong> command to list all files inside /boot from rootfs and then copy our required files with help of <strong>virt-copy-out</strong> command.</p>
-
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-console">▶ virt-ls -a hda.qcow2 /boot
+<pre><code class="language-console" data-lang="console">▶ virt-ls -a hda.qcow2 /boot
 System.map-4.19.0-6-armmp-lpae
 config-4.19.0-6-armmp-lpae
 initrd.img
@@ -337,265 +296,213 @@ initrd.img-4.19.0-6-armmp-lpae
 lost+found
 vmlinuz
 vmlinuz-4.19.0-6-armmp-lpae
-</code></pre>
-
-<pre><code class="language-bash">virt-copy-out -a hda.qcow2 /boot/vmlinuz-4.19.0-6-armmp-lpae /boot/initrd.img-4.19.0-6-armmp-lpae .
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-console">▶ virt-ls -a hda.qcow2 /boot 
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">virt-copy-out -a hda.qcow2 /boot/vmlinuz-4.19.0-6-armmp-lpae /boot/initrd.img-4.19.0-6-armmp-lpae .
+</code></pre></div><p><strong>MIPSEL</strong></p>
+<pre><code class="language-console" data-lang="console">▶ virt-ls -a hda.qcow2 /boot 
 System.map-4.19.0-6-4kc-malta
 config-4.19.0-6-4kc-malta
 initrd.img-4.19.0-6-4kc-malta
 vmlinux-4.19.0-6-4kc-malta
-</code></pre>
-
-<pre><code class="language-bash">virt-copy-out -a hda.qcow2 /boot/vmlinux-4.19.0-6-4kc-malta /boot/initrd.img-4.19.0-6-4kc-malta .
-</code></pre>
-
-<p>Now tweak your previously entered commands according to your target arch and boot into vm. Notice we removed -nographic option since now this time we can use our GUI window provided by virt-manager. To access console you have to switch to serial0 from view menu or by pressing Ctrl+Alt+2 key. If everything goes well you will be greeted by login screen asking for username and password that you choose during os installation.</p>
-
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">virt-copy-out -a hda.qcow2 /boot/vmlinux-4.19.0-6-4kc-malta /boot/initrd.img-4.19.0-6-4kc-malta .
+</code></pre></div><p>Now tweak your previously entered commands according to your target arch and boot into vm. Notice we removed -nographic option since now this time we can use our GUI window provided by virt-manager. To access console you have to switch to serial0 from view menu or by pressing Ctrl+Alt+2 key. If everything goes well you will be greeted by login screen asking for username and password that you choose during os installation.</p>
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-bash">qemu-system-arm -M virt -m 2048 -smp 2 \
--kernel vmlinuz-4.19.0-6-armmp-lpae \
--initrd initrd.img-4.19.0-6-armmp-lpae \
--drive if=none,file=debian-armhf.qcow2,id=hd0 \
--append 'root=/dev/vda2' \
--device virtio-blk-device,drive=hd0 \
--netdev user,id=net0 -device virtio-net-device,netdev=net0 \
--no-reboot &amp;
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-bash">qemu-system-mipsel -M malta -m 2048 \
--kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.img-4.19.0-6-4kc-malta \
--hda debian-mipsel.qcow2 -append &quot;root=/dev/sda1 console=ttyS0&quot; \
--nic user \
--no-reboot &amp;
-</code></pre>
-
-<h2 id="nat-networking-setup">NAT networking setup</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M virt -m <span style="color:#ae81ff">2048</span> -smp <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel vmlinuz-4.19.0-6-armmp-lpae <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-initrd initrd.img-4.19.0-6-armmp-lpae <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-drive <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>none,file<span style="color:#f92672">=</span>debian-armhf.qcow2,id<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-append <span style="color:#e6db74">&#39;root=/dev/vda2&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-device virtio-blk-device,drive<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-netdev user,id<span style="color:#f92672">=</span>net0 -device virtio-net-device,netdev<span style="color:#f92672">=</span>net0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-no-reboot &amp;
+</code></pre></div><p><strong>MIPSEL</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-mipsel -M malta -m <span style="color:#ae81ff">2048</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.img-4.19.0-6-4kc-malta <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-hda debian-mipsel.qcow2 -append <span style="color:#e6db74">&#34;root=/dev/sda1 console=ttyS0&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-nic user <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-no-reboot &amp;
+</code></pre></div><h2 id="nat-networking-setup">NAT networking setup<a href="#nat-networking-setup" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>I know you can directly port forward from SLIRP netwroking backend but thing is when you are testing uknown application or planning to use other ports for your reverse shell you will obiviously desire network setup which will allow you to have access over all 65535 ports and interact with other VM in same network easily. And this setup is same as NAT network in VMWare. Qemu offers tap interface as solution for this scenario. The tap networking backend makes use of a tap networking device in the host. It offers very good performance and can be configured to create virtually any type of network topology (NAT in our case).</p>
-
 <p>In tap networking when Qemu VM boots up it executes /etc/qemu-ifup bash script to manage tap interface and before exiting /etc/qemu-ifdown gets executed where we can place commands to discard all of our networking settings and bring everything to normal state in host machine. Both we have to create manually and don&rsquo;t exists be default inorder to configure out NAT network topology.</p>
-
 <p>Place following content inside /etc/qemu-ifup file.</p>
-
-<pre><code class="language-bash">#!/bin/sh
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/sh
+</span><span style="color:#75715e"></span>#
+<span style="color:#75715e"># Copyright IBM, Corp. 2010</span>  
 #
-# Copyright IBM, Corp. 2010  
+<span style="color:#75715e"># Authors:</span>
+<span style="color:#75715e">#  Anthony Liguori &lt;aliguori@us.ibm.com&gt;</span>
 #
-# Authors:
-#  Anthony Liguori &lt;aliguori@us.ibm.com&gt;
-#
-# This work is licensed under the terms of the GNU GPL, version 2.  See
-# the COPYING file in the top-level directory.
+<span style="color:#75715e"># This work is licensed under the terms of the GNU GPL, version 2.  See</span>
+<span style="color:#75715e"># the COPYING file in the top-level directory.</span>
 
-# Set to the name of your bridge
-BRIDGE=br0
+<span style="color:#75715e"># Set to the name of your bridge</span>
+BRIDGE<span style="color:#f92672">=</span>br0
 
-# Network information
-NETWORK=192.168.53.0
-NETMASK=255.255.255.0
-GATEWAY=192.168.53.1
-DHCPRANGE=192.168.53.2,192.168.53.254
+<span style="color:#75715e"># Network information</span>
+NETWORK<span style="color:#f92672">=</span>192.168.53.0
+NETMASK<span style="color:#f92672">=</span>255.255.255.0
+GATEWAY<span style="color:#f92672">=</span>192.168.53.1
+DHCPRANGE<span style="color:#f92672">=</span>192.168.53.2,192.168.53.254
 
-# Optionally parameters to enable PXE support
-TFTPROOT=
-BOOTP=
+<span style="color:#75715e"># Optionally parameters to enable PXE support</span>
+TFTPROOT<span style="color:#f92672">=</span>
+BOOTP<span style="color:#f92672">=</span>
 
-do_brctl() {
-    brctl &quot;$@&quot;
-}
+do_brctl<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    brctl <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">}</span>
 
-do_ifconfig() {
-    ifconfig &quot;$@&quot;
-}
+do_ifconfig<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    ifconfig <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">}</span>
 
-do_dd() {
-    dd &quot;$@&quot;
-}
+do_dd<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    dd <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">}</span>
 
-do_iptables_restore() {
-    iptables-restore &quot;$@&quot;
-}
+do_iptables_restore<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    iptables-restore <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">}</span>
 
-do_dnsmasq() {
-    dnsmasq &quot;$@&quot;
-}
+do_dnsmasq<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    dnsmasq <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">}</span>
 
-check_bridge() {
-    if do_brctl show | grep &quot;^$1&quot; &gt; /dev/null 2&gt; /dev/null; then
-	return 1
-    else
-	return 0
-    fi
-}
+check_bridge<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> do_brctl show | grep <span style="color:#e6db74">&#34;^</span>$1<span style="color:#e6db74">&#34;</span> &gt; /dev/null 2&gt; /dev/null; <span style="color:#66d9ef">then</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">else</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">fi</span>
+<span style="color:#f92672">}</span>
 
-create_bridge() {
-    do_brctl addbr &quot;$1&quot;
-    do_brctl stp &quot;$1&quot; off
-    do_brctl setfd &quot;$1&quot; 0
-    do_ifconfig &quot;$1&quot; &quot;$GATEWAY&quot; netmask &quot;$NETMASK&quot; up
-}
+create_bridge<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    do_brctl addbr <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+    do_brctl stp <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> off
+    do_brctl setfd <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">0</span>
+    do_ifconfig <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$GATEWAY<span style="color:#e6db74">&#34;</span> netmask <span style="color:#e6db74">&#34;</span>$NETMASK<span style="color:#e6db74">&#34;</span> up
+<span style="color:#f92672">}</span>
 
-enable_ip_forward() {
-    echo 1 | do_dd of=/proc/sys/net/ipv4/ip_forward &gt; /dev/null
-}
+enable_ip_forward<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    echo <span style="color:#ae81ff">1</span> | do_dd of<span style="color:#f92672">=</span>/proc/sys/net/ipv4/ip_forward &gt; /dev/null
+<span style="color:#f92672">}</span>
 
-add_filter_rules() {
-do_iptables_restore &lt;&lt;EOF
-# Generated by iptables-save v1.3.6 on Fri Aug 24 15:20:25 2007
-*nat
-:PREROUTING ACCEPT [61:9671]
-:POSTROUTING ACCEPT [121:7499]
-:OUTPUT ACCEPT [132:8691]
--A POSTROUTING -s $NETWORK/$NETMASK -j MASQUERADE 
-COMMIT
-# Completed on Fri Aug 24 15:20:25 2007
-# Generated by iptables-save v1.3.6 on Fri Aug 24 15:20:25 2007
-*filter
-:INPUT ACCEPT [1453:976046]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1605:194911]
--A INPUT -i $BRIDGE -p tcp -m tcp --dport 67 -j ACCEPT 
--A INPUT -i $BRIDGE -p udp -m udp --dport 67 -j ACCEPT 
--A INPUT -i $BRIDGE -p tcp -m tcp --dport 53 -j ACCEPT 
--A INPUT -i $BRIDGE -p udp -m udp --dport 53 -j ACCEPT 
--A FORWARD -i $1 -o $1 -j ACCEPT 
--A FORWARD -s $NETWORK/$NETMASK -i $BRIDGE -j ACCEPT 
--A FORWARD -d $NETWORK/$NETMASK -o $BRIDGE -m state --state RELATED,ESTABLISHED -j ACCEPT 
--A FORWARD -o $BRIDGE -j REJECT --reject-with icmp-port-unreachable 
--A FORWARD -i $BRIDGE -j REJECT --reject-with icmp-port-unreachable 
-COMMIT
-# Completed on Fri Aug 24 15:20:25 2007
-EOF
-}
+add_filter_rules<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+do_iptables_restore <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74"># Generated by iptables-save v1.3.6 on Fri Aug 24 15:20:25 2007
+</span><span style="color:#e6db74">*nat
+</span><span style="color:#e6db74">:PREROUTING ACCEPT [61:9671]
+</span><span style="color:#e6db74">:POSTROUTING ACCEPT [121:7499]
+</span><span style="color:#e6db74">:OUTPUT ACCEPT [132:8691]
+</span><span style="color:#e6db74">-A POSTROUTING -s $NETWORK/$NETMASK -j MASQUERADE 
+</span><span style="color:#e6db74">COMMIT
+</span><span style="color:#e6db74"># Completed on Fri Aug 24 15:20:25 2007
+</span><span style="color:#e6db74"># Generated by iptables-save v1.3.6 on Fri Aug 24 15:20:25 2007
+</span><span style="color:#e6db74">*filter
+</span><span style="color:#e6db74">:INPUT ACCEPT [1453:976046]
+</span><span style="color:#e6db74">:FORWARD ACCEPT [0:0]
+</span><span style="color:#e6db74">:OUTPUT ACCEPT [1605:194911]
+</span><span style="color:#e6db74">-A INPUT -i $BRIDGE -p tcp -m tcp --dport 67 -j ACCEPT 
+</span><span style="color:#e6db74">-A INPUT -i $BRIDGE -p udp -m udp --dport 67 -j ACCEPT 
+</span><span style="color:#e6db74">-A INPUT -i $BRIDGE -p tcp -m tcp --dport 53 -j ACCEPT 
+</span><span style="color:#e6db74">-A INPUT -i $BRIDGE -p udp -m udp --dport 53 -j ACCEPT 
+</span><span style="color:#e6db74">-A FORWARD -i $1 -o $1 -j ACCEPT 
+</span><span style="color:#e6db74">-A FORWARD -s $NETWORK/$NETMASK -i $BRIDGE -j ACCEPT 
+</span><span style="color:#e6db74">-A FORWARD -d $NETWORK/$NETMASK -o $BRIDGE -m state --state RELATED,ESTABLISHED -j ACCEPT 
+</span><span style="color:#e6db74">-A FORWARD -o $BRIDGE -j REJECT --reject-with icmp-port-unreachable 
+</span><span style="color:#e6db74">-A FORWARD -i $BRIDGE -j REJECT --reject-with icmp-port-unreachable 
+</span><span style="color:#e6db74">COMMIT
+</span><span style="color:#e6db74"># Completed on Fri Aug 24 15:20:25 2007
+</span><span style="color:#e6db74">EOF</span>
+<span style="color:#f92672">}</span>
 
-start_dnsmasq() {
-    do_dnsmasq \
-	--strict-order \
-	--except-interface=lo \
-	--interface=$BRIDGE \
-	--listen-address=$GATEWAY \
-	--bind-interfaces \
-	--dhcp-range=$DHCPRANGE \
-	--conf-file=&quot;&quot; \
-	--pid-file=/var/run/qemu-dnsmasq-$BRIDGE.pid \
-	--dhcp-leasefile=/var/run/qemu-dnsmasq-$BRIDGE.leases \
-	--dhcp-no-override \
-	${TFTPROOT:+&quot;--enable-tftp&quot;} \
-	${TFTPROOT:+&quot;--tftp-root=$TFTPROOT&quot;} \
-	${BOOTP:+&quot;--dhcp-boot=$BOOTP&quot;}
-}
+start_dnsmasq<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    do_dnsmasq <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--strict-order <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--except-interface<span style="color:#f92672">=</span>lo <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--interface<span style="color:#f92672">=</span>$BRIDGE <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--listen-address<span style="color:#f92672">=</span>$GATEWAY <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--bind-interfaces <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--dhcp-range<span style="color:#f92672">=</span>$DHCPRANGE <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--conf-file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--pid-file<span style="color:#f92672">=</span>/var/run/qemu-dnsmasq-$BRIDGE.pid <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--dhcp-leasefile<span style="color:#f92672">=</span>/var/run/qemu-dnsmasq-$BRIDGE.leases <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	--dhcp-no-override <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#e6db74">${</span>TFTPROOT:+<span style="color:#e6db74">&#34;--enable-tftp&#34;</span><span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#e6db74">${</span>TFTPROOT:+<span style="color:#e6db74">&#34;--tftp-root=</span>$TFTPROOT<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>	<span style="color:#e6db74">${</span>BOOTP:+<span style="color:#e6db74">&#34;--dhcp-boot=</span>$BOOTP<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">}</span>
+<span style="color:#f92672">}</span>
 
-setup_bridge_nat() {
-    if check_bridge &quot;$1&quot; ; then
-	create_bridge &quot;$1&quot;
+setup_bridge_nat<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> check_bridge <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> ; <span style="color:#66d9ef">then</span>
+	create_bridge <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
 	enable_ip_forward
-	add_filter_rules &quot;$1&quot;
-	start_dnsmasq &quot;$1&quot;
-    fi
-}
+	add_filter_rules <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+	start_dnsmasq <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">fi</span>
+<span style="color:#f92672">}</span>
 
-setup_bridge_vlan() {
-    if check_bridge &quot;$1&quot; ; then
-	create_bridge &quot;$1&quot;
-	start_dnsmasq &quot;$1&quot;
-    fi
-}
+setup_bridge_vlan<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> check_bridge <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> ; <span style="color:#66d9ef">then</span>
+	create_bridge <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+	start_dnsmasq <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">fi</span>
+<span style="color:#f92672">}</span>
 
-setup_bridge_nat &quot;$BRIDGE&quot;
+setup_bridge_nat <span style="color:#e6db74">&#34;</span>$BRIDGE<span style="color:#e6db74">&#34;</span>
 
-if test &quot;$1&quot; ; then
-    do_ifconfig &quot;$1&quot; 0.0.0.0 up
-    do_brctl addif &quot;$BRIDGE&quot; &quot;$1&quot;
-fi
-</code></pre>
-
-<p>And following lines for /etc/qemu-ifdown</p>
-
-<pre><code class="language-bash">#!/bin/bash
-
-BRIDGE=br0
+<span style="color:#66d9ef">if</span> test <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> ; <span style="color:#66d9ef">then</span>
+    do_ifconfig <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> 0.0.0.0 up
+    do_brctl addif <span style="color:#e6db74">&#34;</span>$BRIDGE<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+<span style="color:#66d9ef">fi</span>
+</code></pre></div><p>And following lines for /etc/qemu-ifdown</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+BRIDGE<span style="color:#f92672">=</span>br0
 
 killall dnsmasq
-brctl delif &quot;$BRIDGE&quot; &quot;$1&quot;
-ip link set &quot;$1&quot; down
-ip link set &quot;$BRIDGE&quot; down
-ip tuntap del dev &quot;$1&quot; mode tap
-brctl delbr &quot;$BRIDGE&quot;
+brctl delif <span style="color:#e6db74">&#34;</span>$BRIDGE<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+ip link set <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> down
+ip link set <span style="color:#e6db74">&#34;</span>$BRIDGE<span style="color:#e6db74">&#34;</span> down
+ip tuntap del dev <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> mode tap
+brctl delbr <span style="color:#e6db74">&#34;</span>$BRIDGE<span style="color:#e6db74">&#34;</span>
 iptables -F
-</code></pre>
-
-<p>Make both of them executable</p>
-
-<pre><code class="language-bash">chmod 700 /etc/qemu-ifup
-</code></pre>
-
-<pre><code class="language-bash">chmod 700 /etc/qemu-ifdown
-</code></pre>
-
-<p>So qemu-ifup make use of dnsmasq, bridge-utils and iptables to bridge tap interface to br0 and forward all packets to internet facing devices with help of ip tables rules. Both script takes tap interface name as argument. For example if you are running one Qemu VM then it will be tap0 or if you are already running one new tap interface will created as tap1,tap2,tap3&hellip;tapN depending on number of VM you running simultaneously. You can check it with <strong>ifconfig</strong> command on host you will see br0 and tap0/tapN after VM boot up.</p>
-
+</code></pre></div><p>Make both of them executable</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chmod <span style="color:#ae81ff">700</span> /etc/qemu-ifup
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chmod <span style="color:#ae81ff">700</span> /etc/qemu-ifdown
+</code></pre></div><p>So qemu-ifup make use of dnsmasq, bridge-utils and iptables to bridge tap interface to br0 and forward all packets to internet facing devices with help of ip tables rules. Both script takes tap interface name as argument. For example if you are running one Qemu VM then it will be tap0 or if you are already running one new tap interface will created as tap1,tap2,tap3&hellip;tapN depending on number of VM you running simultaneously. You can check it with <strong>ifconfig</strong> command on host you will see br0 and tap0/tapN after VM boot up.</p>
 <p>Time for the final boot up command tweaking</p>
-
 <p><strong>ARM</strong></p>
-
-<pre><code class="language-bash">#!/bin/bash
-
-qemu-system-arm -M virt -m 2048 -smp 2 \
--kernel vmlinuz-4.19.0-6-armmp-lpae \
--initrd initrd.img-4.19.0-6-armmp-lpae \
--drive if=none,file=debian-armhf.qcow2,id=hd0 \
--append 'root=/dev/vda2' \
--device virtio-blk-device,drive=hd0 \
--netdev tap,id=net0 -device virtio-net-device,netdev=net0,mac=52:54:00:AB:05:8D \
--object rng-random,filename=/dev/urandom,id=rng0 \
--device virtio-rng-device,rng=rng0 \
--no-reboot &amp;
-</code></pre>
-
-<p><strong>MIPSEL</strong></p>
-
-<pre><code class="language-bash">#!/bin/bash
-
-qemu-system-mipsel -M malta -m 2048 \
--kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.img-4.19.0-6-4kc-malta \
--hda debian-mipsel.qcow2 -append &quot;root=/dev/sda1 console=ttyS0&quot; \
--nic tap,mac=52:54:00:AB:21:D7 \
--no-reboot &amp;
-</code></pre>
-
-<p>Notice that we add one more device for ARM VM. Basically we are binding /dev/urandom (host kernel entropy source) to VM because without it ssh service fails to start in VM boot up and takes around 15min time to come back online. I think armhf kernel for debian does not have proper support inbuilt entropy source for virt CPU which leads to this situation.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+qemu-system-arm -M virt -m <span style="color:#ae81ff">2048</span> -smp <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel vmlinuz-4.19.0-6-armmp-lpae <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-initrd initrd.img-4.19.0-6-armmp-lpae <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-drive <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>none,file<span style="color:#f92672">=</span>debian-armhf.qcow2,id<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-append <span style="color:#e6db74">&#39;root=/dev/vda2&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-device virtio-blk-device,drive<span style="color:#f92672">=</span>hd0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-netdev tap,id<span style="color:#f92672">=</span>net0 -device virtio-net-device,netdev<span style="color:#f92672">=</span>net0,mac<span style="color:#f92672">=</span>52:54:00:AB:05:8D <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-object rng-random,filename<span style="color:#f92672">=</span>/dev/urandom,id<span style="color:#f92672">=</span>rng0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-device virtio-rng-device,rng<span style="color:#f92672">=</span>rng0 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-no-reboot &amp;
+</code></pre></div><p><strong>MIPSEL</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+qemu-system-mipsel -M malta -m <span style="color:#ae81ff">2048</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel vmlinux-4.19.0-6-4kc-malta -initrd initrd.img-4.19.0-6-4kc-malta <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-hda debian-mipsel.qcow2 -append <span style="color:#e6db74">&#34;root=/dev/sda1 console=ttyS0&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-nic tap,mac<span style="color:#f92672">=</span>52:54:00:AB:21:D7 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-no-reboot &amp;
+</code></pre></div><p>Notice that we add one more device for ARM VM. Basically we are binding /dev/urandom (host kernel entropy source) to VM because without it ssh service fails to start in VM boot up and takes around 15min time to come back online. I think armhf kernel for debian does not have proper support inbuilt entropy source for virt CPU which leads to this situation.</p>
 <p>For both of the machine we change network backend from user to tap and provide unique mac address. To generate QEMU supported mac addresses use this command in terminal.</p>
-
-<pre><code class="language-bash">printf '52:54:00:AB:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))
-</code></pre>
-
-<p>I prefer to save the boot commands into shell script file as boot-vm.sh where your VM files are located. Because I am not a super computer which remebers every single command in linux XD.</p>
-
-<h2 id="post-installation-steps">Post installation steps</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">printf <span style="color:#e6db74">&#39;52:54:00:AB:%02X:%02X\n&#39;</span> <span style="color:#66d9ef">$((</span>RANDOM%256<span style="color:#66d9ef">))</span> <span style="color:#66d9ef">$((</span>RANDOM%256<span style="color:#66d9ef">))</span>
+</code></pre></div><p>I prefer to save the boot commands into shell script file as boot-vm.sh where your VM files are located. Because I am not a super computer which remebers every single command in linux XD.</p>
+<h2 id="post-installation-steps">Post installation steps<a href="#post-installation-steps" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>So these installed VM are running bare minimum version of debian which lacks lot&rsquo;s of utilities that we will need while conducting IoT security research work such as GDB and other development tools.</p>
-
-<pre><code class="language-bash">apt update &amp;&amp; apt upgrade -y &amp;&amp; apt install build-essential cmake git gdb python python-dev python-pip python3 python3-dev python3-pip net-tools
-</code></pre>
-
-<p>And then I start installing my other favourite tools such as radare2 :D</p>
-
-<pre><code class="language-bash">git clone https://github.com/radareorg/radare2.git &amp;&amp; cd radare2
-</code></pre>
-
-<pre><code class="language-bash">sys/install.sh
-</code></pre>
-
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apt update <span style="color:#f92672">&amp;&amp;</span> apt upgrade -y <span style="color:#f92672">&amp;&amp;</span> apt install build-essential cmake git gdb python python-dev python-pip python3 python3-dev python3-pip net-tools
+</code></pre></div><p>And then I start installing my other favourite tools such as radare2 :D</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/radareorg/radare2.git <span style="color:#f92672">&amp;&amp;</span> cd radare2
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sys/install.sh
+</code></pre></div>
   <figure class="center" >
     <img src="/img/2019-09-26-165735_939x1030_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
     
@@ -604,26 +511,17 @@ qemu-system-mipsel -M malta -m 2048 \
   </figure>
 
 
-
 <p>Software compilation is very slow in these emulated environments some times it takes hours to compile an open source software.</p>
-
 <p><strong>Important note:</strong> current qemu-ifdown script deletes networking bridge if you are running other qemu VM on tap backend using qemu-ifup script then communication with that VM will be disrupted. To restore networking just call script with tap interface name. For example you are running ARM machine (booted first) with MIPSEL (booted after ARM) one. And you shutdown MIPSEL you have to call script as following <em>/etc/qemu-ifdown tap0</em> and then <em>/etc/qemu-ifup tap0</em> to restore all networking state with ARM machine running on tap0 interface. Once I will get time, I will improve /etc/qemu-ifdown script with checks for other tap interface so it avoid deleting bridge interface if present any.</p>
-
-<h2 id="the-end">The End</h2>
-
+<h2 id="the-end">The End<a href="#the-end" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>Thanks you for taking your time and going through this detailed tutorial. If you like it don&rsquo;t forget to share on any social media you like, it does really helps this blog. Don&rsquo;t forget to check <a href="https://cjhackerz.net/contact">contact</a> section of this blog to reach me out over social media for any queries.</p>
-
-<h2 id="credits">Credits</h2>
-
+<h2 id="credits">Credits<a href="#credits" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>[1] =&gt; <a href="https://translatedcode.wordpress.com/2016/11/03/installing-debian-on-qemus-32-bit-arm-virt-board/">https://translatedcode.wordpress.com/2016/11/03/installing-debian-on-qemus-32-bit-arm-virt-board/</a></p>
-
 <p>[2] =&gt; <a href="https://www.aurel32.net/info/debian_mips_qemu.php">https://www.aurel32.net/info/debian_mips_qemu.php</a></p>
-
 <p>[3] =&gt; <a href="https://wiki.qemu.org/Documentation/Networking/NAT">https://wiki.qemu.org/Documentation/Networking/NAT</a></p>
-
 <p>[4] =&gt; <a href="https://wiki.qemu.org/Documentation/Networking">https://wiki.qemu.org/Documentation/Networking</a></p>
 
-  </div>
+      </div></div>
   
   <div class="pagination">
     <div class="pagination__title">

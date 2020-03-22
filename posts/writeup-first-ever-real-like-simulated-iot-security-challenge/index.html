@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>WriteUp: First ever real like simulated IoT security challenge :: Chirag Jariwala — Cyber security analyst and IoT security researcher</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Few months ago I had released a challenge on IoT/Embeded security and put it up on various places inorder to allow people to solve it. Sadly long wait is over and now covid-19 in on rise gloablly there is no interests to solve it even in quarantine. So to give justice to my work I am putting up this write up together which you can follow along to learn and solve my challenge." />
+<meta name="keywords" content="cjhackerz" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+<link rel="stylesheet" href="https://cjhackerz.net/assets/style.css">
+
+  <link rel="stylesheet" href="https://cjhackerz.net/assets/red.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cjhackerz.net/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="https://cjhackerz.net/img/favicon/red.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="CJHackerz" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="WriteUp: First ever real like simulated IoT security challenge :: Chirag Jariwala">
+<meta property="og:description" content="Few months ago I had released a challenge on IoT/Embeded security and put it up on various places inorder to allow people to solve it. Sadly long wait is over and now covid-19 in on rise gloablly there is no interests to solve it even in quarantine. So to give justice to my work I am putting up this write up together which you can follow along to learn and solve my challenge." />
+<meta property="og:url" content="https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/" />
+<meta property="og:site_name" content="WriteUp: First ever real like simulated IoT security challenge" />
+<meta property="og:image" content="https://cjhackerz.net/img/2020-01-29-150859_1920x1055_scrot.png">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2020-03-22 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    CJHackerz.Net
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/contact">Contact</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/contact">Contact</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/">WriteUp: First ever real like simulated IoT security challenge</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-03-22
+    </span>
+    
+    
+    <span class="post-author">::
+      CJHackerz
+    </span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://cjhackerz.net/tags/iot/">IoT</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/hardware/">Hardware</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/writeup/">Writeup</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/ctf/">CTF</a>&nbsp;
+    
+  </span>
+  
+
+  
+  <img src="https://cjhackerz.net/img/2020-01-29-150859_1920x1055_scrot.png" class="post-cover" />
+  
+
+  <div class="post-content"><div>
+        <p>Few months ago I had released a challenge on IoT/Embeded security and put it up on various places inorder to allow people to solve it. Sadly long wait is over and now covid-19 in on rise gloablly there is no interests to solve it even in quarantine. So to give justice to my work I am putting up this write up together which you can follow along to learn and solve my challenge. Also next part of this blog will be released soon where I will discuss how to create such a challenge and make your Qemu firmware binary. Let&rsquo;s get started!</p>
+<p>Contents of b00t2r00t.tar.gz after extraction</p>
+<pre><code class="language-console" data-lang="console">$ tree b00t2R00t 
+b00t2R00t
+├── README.txt
+├── boot-vm.sh
+├── firmware.bin
+└── u-boot
+
+0 directories, 4 files
+</code></pre><p>All instructions were provided in README.txt inorder to start qemu vm for this challenge. See the screenshot in cover image of this article.</p>
+<h2 id="firmware-analysis">Firmware analysis<a href="#firmware-analysis" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Before you begin obivious way to look at juicy stuff would be contents inside firmware.bin as we all know first step to do is run all mighty binwalk tool by <a href="https://twitter.com">/dev/ttys0</a> (aka Craig Heffner). If you new to iot security and don&rsquo;t know who is /dev/ttys0 checkout his blog <a href="http://www.devttys0.com/">http://www.devttys0.com/</a> do follow him on twitter as well he is quite an inspiration for me as great hardware security revrese engineer and super dad for his beloved daughter (love your work and personality man <strong>no homo XD</strong>).</p>
+<p>Enough praising /dev/ttys0 let&rsquo;s move to our main content. Let&rsquo;s checkout output from binwalk.</p>
+<pre><code class="language-console" data-lang="console">$ binwalk firmware.bin
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+262144        0x40000         uImage header, header size: 64 bytes, header CRC: 0x2727D46F, created: 2020-01-29 07:51:06, image size: 4710192 bytes, Data Address: 0x60010000, Entry Point: 0x60010000, data CRC: 0xB6CB3D13, OS: Linux, CPU: ARM, image type: OS Kernel Image, compression type: none, image name: &quot;&quot;
+262208        0x40040         Linux kernel ARM boot executable zImage (little-endian)
+264672        0x409E0         device tree image (dtb)
+294216        0x47D48         gzip compressed data, maximum compression, from Unix, last modified: 1970-01-01 00:00:00 (null date)
+8875532       0x876E0C        device tree image (dtb)
+8880044       0x877FAC        device tree image (dtb)
+8916304       0x880D50        CRC32 polynomial table, little endian
+8917328       0x881150        CRC32 polynomial table, little endian
+8949433       0x888EB9        LZO compressed data
+19398656      0x1280000       uImage header, header size: 64 bytes, header CRC: 0x220B17CC, created: 2020-01-29 07:52:38, image size: 1927313 bytes, Data Address: 0x60800000, Entry Point: 0x60800000, data CRC: 0xA51C60FF, OS: Linux, CPU: ARM, image type: RAMDisk Image, compression type: gzip, image name: &quot;&quot;
+19398720      0x1280040       gzip compressed data, maximum compression, from Unix, last modified: 1970-01-01 00:00:00 (null date)
+27525120      0x1A40000       device tree image (dtb)
+</code></pre><p>Very first thing you notice is presence of uImage headers at 0x40000 (linux kernel) and 0x1280000 (RAMDisk containing init filesystem). uImage is wrapper file format used in open source u-boot bootloader for embeded systems. uImage contains information of type of image such as (kernel, filesystem or ramdisk) and where to load in memory area (mostly kernel at start of the ram with some offset). We will see more about it in bootloader analysis part of this blog. Let&rsquo;s extract everything.</p>
+<pre><code class="language-console" data-lang="console">$ binwalk -Me firmware.bin
+</code></pre><p>After binwalk do it&rsquo;s magic you will see newly created directory in your present working directory called _<strong>firmware.bin.extracted</strong></p>
+<pre><code class="language-console" data-lang="console">$ ls _firmware.bin.extracted
+1280040  47D48  888EB9.lzo  _1280040.extracted  _47D48.extracted
+</code></pre><p>As we saw previously in binwalk output for firmware.bin 0x1280000 is exactly where our uImage for init filesystem containing gzip compressed cpio (RAMDisk file) is present. Inside _1280040.extracted directory you will see binwalk has extracted cpio.0 archive file as cpio-root directory. By checking contents you will realise it is root filesystem for our emulated machine.</p>
+<pre><code class="language-console" data-lang="console">$ ls cpio-root
+bin  etc   lib    linuxrc  mnt  proc  run   sys  usr
+dev  init  lib32  media    opt  root  sbin  tmp  var
+</code></pre><h2 id="filesystem-analysis">Filesystem analysis<a href="#filesystem-analysis" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="busybox-init">Busybox init<a href="#busybox-init" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>As I have clearly mentioned in README.txt file when system boots our flag file is getting encrypted. Ask yourself a simple question at this point &ldquo;<em>When linux boots what is that first program with PID 1 responsible to start all other services, tasks and user space programs?</em>&quot;. Init system obviously and since this is embeded system we are dealing with, it will be busybox init system. By default busybox init system excutes simple shell scripts situated at etc/init.d/</p>
+<pre><code class="language-console" data-lang="console">ls etc/init.d/
+S01syslogd  S02klogd  S02sysctl  S20urandom  S40network  S50filevault  rcK  rcS
+</code></pre><p>You can see the big gotcha here with presence of S50filevault shell script file. Filevault that userspace program responsbile for flag file encryption. Here you can see file naming pattern for these init scripts S[number]file_name. Basically when busybox init start running scripting with lower to higher number. So S01syslogd will be executed first and S02klogd next. Like wise S50filevault in last before that S40network will get executed.</p>
+<pre><code class="language-console" data-lang="console">cat S50filevault
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/sh
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+  start<span style="color:#f92672">)</span>
+	printf <span style="color:#e6db74">&#34;[FileVault] Encrypting File /root/flag.txt&#34;</span>
+	/bin/file_vault
+	;;
+  stop<span style="color:#f92672">)</span>
+	printf <span style="color:#e6db74">&#34;[FileVault] Cleaning Up flag&#34;</span>
+	rm /root/flag.txt
+	;;
+  restart|reload<span style="color:#f92672">)</span>
+	<span style="color:#e6db74">&#34;</span>$0<span style="color:#e6db74">&#34;</span> stop
+	<span style="color:#e6db74">&#34;</span>$0<span style="color:#e6db74">&#34;</span> start
+	;;
+  *<span style="color:#f92672">)</span>
+	echo <span style="color:#e6db74">&#34;Usage: </span>$0<span style="color:#e6db74"> {start|stop|restart}&#34;</span>
+	exit <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">esac</span>
+
+exit $?
+</code></pre></div><p>By reading shell script you can guess what is exactly happening. When busbox init system excutes shell scripts under etc/init.d/ directory, anyof 3 argument (start, stop and restart) is passed to our scripts according to situation of startup or shutdown. At startup all script receives start as argument and during shutdown it is stop. So to handle these argument developer has to define cases for that. For our S50filevault it&rsquo;s just calling userspace program binary called file_vault under /bin directory.</p>
+<pre><code class="language-console" data-lang="console">$ readelf -h bin/file_vault
+readelf -h file_vault
+ELF Header:
+  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           ARM
+  Version:                           0x1
+  Entry point address:               0x67238
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          1579244 (bytes into file)
+  Flags:                             0x5000002, Version5 EABI, &lt;unknown&gt;
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         7
+  Size of section headers:           40 (bytes)
+  Number of section headers:         14
+  Section header string table index: 13
+</code></pre><h3 id="root-password-caracking">Root password caracking<a href="#root-password-caracking" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>To anylise stuff during runtime it&rsquo;s important to crack root password. It makes life lot easy. Many routers comes with telnet feature and hardcoded root password which is weak and you can crack it by throwing your etc/shadow file hash from extracted filesystem to hashcat.</p>
+<pre><code class="language-console" data-lang="console">$ cat etc/shadow
+root:$5$tteRhk9Y$7u0nhaiBjVi9TNXvMrGk/Nh7lDSeZfV7bROSOJFVbN6:::::::
+daemon:*:::::::
+bin:*:::::::
+sys:*:::::::
+sync:*:::::::
+mail:*:::::::
+www-data:*:::::::
+operator:*:::::::
+nobody:*:::::::
+</code></pre><p>extract our root hash string and store it in file for processing with hashcat</p>
+<pre><code class="language-console" data-lang="console">$ head -n 1 shadow | cut -d &quot;:&quot; -f 2 &gt; root.hash
+</code></pre><p>While creating this challenge I selected password from <strong>SecLists/Passwords/Default-Credentials/telnet-betterdefaultpasslist.txt</strong> file. I extremely sorry for not including telnet service as hint, but I was openly ready to point you at this file for password cracking as hint after reaching to this path. Note that telnet-betterdefaultpasslist.txt has username and password combo where we only need passwords. This can be easily solved again with cut command.</p>
+<pre><code class="language-console" data-lang="console">$ cat telnet-betterdefaultpasslist.txt | cut -d &quot;:&quot; -f 2 &gt;&gt; telnet-betterdefaultpassonly_list.txt
+</code></pre><p>Our hash string for root user starts with $5$ which indicated SHA256 crypt for Unix (-m 7400 option for hashcat)(for SHA512 to it would be $6$). Let&rsquo;s crack it with hashcat and GPU power.</p>
+<p>My cracking hardware in laptop</p>
+<pre><code class="language-console" data-lang="console">$ hashcat -I
+hashcat (v5.1.0) starting...
+
+OpenCL Info:
+
+Platform ID #1
+  Vendor  : Intel(R) Corporation
+  Name    : Intel(R) OpenCL HD Graphics
+  Version : OpenCL 2.1 
+
+  Device ID #1
+    Type           : GPU
+    Vendor ID      : 8
+    Vendor         : Intel(R) Corporation
+    Name           : Intel(R) Gen9 HD Graphics NEO
+    Version        : OpenCL 2.1 NEO 
+    Processor(s)   : 24
+    Clock          : 1000
+    Memory         : 4095/9475 MB allocatable
+    OpenCL Version : OpenCL C 2.0 
+    Driver Version : 20.08.15750
+
+Platform ID #2
+  Vendor  : NVIDIA Corporation
+  Name    : NVIDIA CUDA
+  Version : OpenCL 1.2 CUDA 10.1.0
+
+  Device ID #2
+    Type           : GPU
+    Vendor ID      : 32
+    Vendor         : NVIDIA Corporation
+    Name           : GeForce 930M
+    Version        : OpenCL 1.2 CUDA
+    Processor(s)   : 3
+    Clock          : 941
+    Memory         : 501/2004 MB allocatable
+    OpenCL Version : OpenCL C 1.2 
+    Driver Version : 435.21
+</code></pre><p>Cracking password on my Nvidia GPU</p>
+<pre><code class="language-console" data-lang="console">$ hashcat -d 2 -m 7400 -a 0 root.hash telnet-betterdefaultpassonly_list.txt
+
+hashcat (v5.1.0) starting...
+* Device #1: Intel's OpenCL runtime (GPU only) is currently broken.
+We are waiting for updated OpenCL drivers from Intel. You can use --force to override, but do not report related errors.
+* Device #2: WARNING! Kernel exec timeout is not disabled. This may cause &quot;CL_OUT_OF_RESOURCES&quot; or related errors.
+             To disable the timeout, see: https://hashcat.net/q/timeoutpatch
+nvmlDeviceGetFanSpeed(): Not Supported
+
+OpenCL Platform #1: Intel(R) Corporation
+========================================
+* Device #1: Intel(R) Gen9 HD Graphics NEO, skipped.
+
+OpenCL Platform #2: NVIDIA Corporation
+======================================
+* Device #2: GeForce 930M, 501/2004 MB allocatable, 3MCU
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Applicable optimizers:
+* Zero-Byte
+* Single-Hash
+* Single-Salt
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+ATTENTION! Pure (unoptimized) OpenCL kernels selected.
+This enables cracking passwords and salts &gt; length 32 but for the price of drastically reduced performance.
+If you want to switch to optimized OpenCL kernels, append -O to your commandline.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Dictionary cache hit:
+* Filename..: telnet-betterdefaultpassonly_list.txt
+* Passwords.: 146
+* Bytes.....: 1417
+* Keyspace..: 146
+
+The wordlist or mask that you are using is too small.
+This means that hashcat cannot use the full parallel power of your device(s).
+Unless you supply more work, your cracking speed will drop.
+For tips on supplying more work, see: https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =                                               Approaching final keyspace - workload adjusted.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =                                               $5$tteRhk9Y$7u0nhaiBjVi9TNXvMrGk/Nh7lDSeZfV7bROSOJFVbN6:realtek
+                                                 
+Session..........: hashcat
+Status...........: Cracked
+Hash.Type........: sha256crypt $5$, SHA256 (Unix)
+Hash.Target......: $5$tteRhk9Y$7u0nhaiBjVi9TNXvMrGk/Nh7lDSeZfV7bROSOJFVbN6
+Time.Started.....: Sun Mar 22 20:59:35 2020 (0 secs)
+Time.Estimated...: Sun Mar 22 20:59:35 2020 (0 secs)
+Guess.Base.......: File (telnet-betterdefaultpassonly_list.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#2.........:     1058 H/s (0.75ms) @ Accel:64 Loops:32 Thr:64 Vec:1
+Recovered........: 1/1 (100.00%) Digests, 1/1 (100.00%) Salts
+Progress.........: 146/146 (100.00%)
+Rejected.........: 0/146 (0.00%)
+Restore.Point....: 0/146 (0.00%)
+Restore.Sub.#2...: Salt:0 Amplifier:0-1 Iteration:4992-5000
+Candidates.#2....: calvin -&gt; 20080826
+Hardware.Mon.#2..: Temp: 55c Util: 95% Core: 941MHz Mem: 900MHz Bus:4
+
+Started: Sun Mar 22 20:59:29 2020
+Stopped: Sun Mar 22 20:59:36 2020
+</code></pre><p>Root password is <strong>realtek</strong> (told ya I am trying to keep this as real as possible :p) Don&rsquo;t be happy flag is still encrypted.</p>
+
+  <figure class="center" >
+    <img src="/img/2020-03-22-210820_1366x743_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Sucessful login attempt with cracked password</figcaption>
+    
+  </figure>
+
+
+<h2 id="pwning-bootloader">Pwning bootloader<a href="#pwning-bootloader" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+
+  <figure class="center" >
+    <img src="/img/2020-03-22-210859_1366x743_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Bootloader prompt</figcaption>
+    
+  </figure>
+
+
+<p>During machine startup you have 10 second timer given to stop auto boot in bootloader. Just press any key from keyboard you will be dropped into u-boot command line. Type <strong>help</strong> to see all list of supported commands. Most useful one if <strong>printenv</strong> which allows us to print all or specific environmental variables set for u-boot. These variables are nothing but configuration settings telling bootloader how to boot system in various scenarios.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Env variable</th>
+<th align="left">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">arch</td>
+<td align="left">CPU architecture</td>
+</tr>
+<tr>
+<td align="left">board</td>
+<td align="left">Name of hardware</td>
+</tr>
+<tr>
+<td align="left">bootdelay</td>
+<td align="left">Auto boot delay timer in seconds</td>
+</tr>
+<tr>
+<td align="left">baudrate</td>
+<td align="left">Serial buadrate of device</td>
+</tr>
+<tr>
+<td align="left">bootargs</td>
+<td align="left">holds kernel arguments passed during boot</td>
+</tr>
+<tr>
+<td align="left">bootcmd</td>
+<td align="left">command used in auto boot</td>
+</tr>
+<tr>
+<td align="left">dram</td>
+<td align="left">Total available ram size in mb</td>
+</tr>
+</tbody>
+</table>
+<p>Let&rsquo;s checkout values for <strong>bootargs</strong> and <strong>bootcmd</strong></p>
+<pre><code class="language-console" data-lang="console">=&gt; printenv bootargs
+bootargs=root=/dev/ram console=ttyAMA0,38400n8 FILE_VAULT=NOeHAVYuo6KRbtWxxk4ixkUM9maqs670fV7g6p7
+=&gt; printenv bootcmd
+bootcmd=bootm 0x40040000 0x41280000 0x41A40000
+</code></pre><p>From output above you can tell that kernel arguments are <strong>root=/dev/ram console=ttyAMA0,38400n8 FILE_VAULT=NOeHAVYuo6KRbtWxxk4ixkUM9maqs670fV7g6p7</strong> which you can verify from root shell after cracking password.</p>
+<pre><code class="language-console" data-lang="console">IOTSEC101-CTF [made by CJHackerz]
+target login: root
+Password: 
+# cat /proc/cmdline
+root=/dev/ram console=ttyAMA0,38400n8 FILE_VAULT=NOeHAVYuo6KRbtWxxk4ixkUM9maqs670fV7g6p7
+</code></pre><h3 id="putting-pieces-togather">Putting pieces togather<a href="#putting-pieces-togather" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>So what is happening here is that bootloader is passing custom kernel argument called <strong>FILE_VAULT</strong> since it is obiviously not linux default kernel peram. Busybox init system excutes ARM 32-bit ELF binary /bin/file_vault. Which is probabbly reading loaded kernel args from /proc/cmdline and extracts value of <strong>FILE_VAULT</strong> param as encryption key. Now we know almost everything to pwn this CTF only thing is left to reverse engineer that userspace program inorder to find our algorithm used behind it.</p>
+<h2 id="reverse-engineering-userspace-program">Reverse engineering userspace program<a href="#reverse-engineering-userspace-program" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<pre><code class="language-console" data-lang="console">file file_vault
+file_vault: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), statically linked, Go BuildID=rfY8dzL4QWDivzT3tIof/yzSyL412r2SfnqiFM1uG/n7cCu_U_mAOMnAtnQZi6/emiAkqStHyqLllmeNH2E, stripped
+</code></pre><p>File command gives us some instant gotcha, first <strong>Go BuildId=</strong> tells us program is written in go lang and is statically compiled binary. Symbol names are stripped as you would find the same in real life scenarios. This makes reverse engineering much harder since you won&rsquo;t have human readable names for symbol names.</p>
+<p>Here I realised my big mistake and why probabbly no one was able to solve it.</p>
+
+  <figure class="center" >
+    <img src="/img/2020-03-23-002217_1366x743_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Big oopsie</figcaption>
+    
+  </figure>
+
+
+<p>You see since functions names does not make any sense it would take months to reverse engineer this binary without proper symbol table. Basically I should have created this binary by passing ldflags=&rdquo;-w&rdquo; instead of ldflags=&rdquo;-w -s&rdquo; in go compilation. And I shared firmware binary with symbols stripped. Now it&rsquo;s too late to make any changes but you can find intended binary for reversing at <a href="https://cjhackerz.net/files/file_vault">here</a></p>
+<p>Download binary from above link we will continue in Radare2</p>
+
+  <figure class="center" >
+    <img src="/img/2020-03-23-003554_1366x743_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >R2 is Great!</figcaption>
+    
+  </figure>
+
+
+<p>-AAA option in r2 will anlyze function names, symbol tables and all other things which makes your life easy in reverse engineering. Type <strong>afl</strong> (Anlyze Function List) inorder to see function names.</p>
+
+  <figure class="center" >
+    <img src="/img/2020-03-23-003821_1366x743_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Our attack vectors</figcaption>
+    
+  </figure>
+
+
+<p>you can see 3 highlighted function names of interest now everything is clear as we predicted before. above 3 function you can see the some regex related function as well which are used in sym.main.read.procfs for extracting value of FILE_VAULT peram from /proc/cmdline output. Let&rsquo;s switch to sym.main.encrypt in r2.</p>
+<pre><code class="language-console" data-lang="console">s sym.main.encrypt
+</code></pre><p>To see dissassembly</p>
+<pre><code class="language-console" data-lang="console">pdf
+</code></pre><p>Switch to visual mode</p>
+<pre><code class="language-console" data-lang="console">VVV
+</code></pre><p>One instruction which clearly stands out is this one</p>
+<pre><code class="language-console" data-lang="console">0x000b7bf4      000027e0       eor r0, r7, r0
+</code></pre><p>eor is ARM instruction for XOR. Yes so encryption function is not actually encryption but simple xor operation of key from FILE_VAULT kernel peram and data. So you can decrypt flag.txt file with same key which is <strong>NOeHAVYuo6KRbtWxxk4ixkUM9maqs670fV7g6p7</strong></p>
+<p>Boot VM, login as root and get bytes from flag.txt file with help of hexdump</p>
+<pre><code class="language-console" data-lang="console">$ cat flag.txt | hexdump -ve '16/1 &quot;%02x &quot; &quot;\n&quot;'
+1d 1a 5c 1d 14 66 0f 31 22 62 0a 2a 07 44 1e 0f
+35 23 65 10 2d 01 14 3a 5d 25 51
+</code></pre><p>Copy these bytes from your terminal and save them to flag.hex file in your host/local machine by using text editor of your choice.
+And with help of xxd rebuilt your flag file. You may ask why we are doing this because our firmware does not have any client/server tools installed to tranfer files easily.</p>
+<pre><code class="language-console" data-lang="console">$ xxd -r -p flag.hex flag.txt
+</code></pre><pre><code class="language-console" data-lang="console">$ cat flag.txt | python2 xor.py &quot;NOeHAVYuo6KRbtWxxk4ixkUM9maqs670fV7g6p7&quot;
+SU9UU0VDMTAxe0IwMHQyUjAwdH
+</code></pre><p>which is base64 encoded flag string for <strong>IOTSEC101{B00t2R00t}</strong>. You can find this hardcoded inside file_vault binary as well that was the exact reason I encoded it in order to make it look like gibberish string.</p>
+<p>That&rsquo;s it folks. A painful CTF fool of maker mistakes but lot&rsquo;s of learnings on the way. If you liked this article please share it on your favourite social media platform it means a lot too me. It took me 2 weeks to create this challenge and more than 6 hours to finish this write up. Stay tuned for 2nd part of this aritcle where I will disscuss how I put together entire thing from kernel compiletion to firmware binary creation.</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/">
+          <span class="button__text">An overview on writing ARM shellcode</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© 2019, All rights reserved to Chirag Jariwala</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://cjhackerz.net/assets/main.js"></script>
+<script src="https://cjhackerz.net/assets/prism.js"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+
+  
+</div>
+
+</body>
+</html>

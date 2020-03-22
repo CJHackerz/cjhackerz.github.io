@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Chirag Jariwala</title>
@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Tue, 22 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>WriteUp: First ever real like simulated IoT security challenge</title>
+      <link>https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/</guid>
+      <description>Few months ago I had released a challenge on IoT/Embeded security and put it up on various places inorder to allow people to solve it. Sadly long wait is over and now covid-19 in on rise gloablly there is no interests to solve it even in quarantine. So to give justice to my work I am putting up this write up together which you can follow along to learn and solve my challenge.</description>
+    </item>
     
     <item>
       <title>An overview on writing ARM shellcode</title>

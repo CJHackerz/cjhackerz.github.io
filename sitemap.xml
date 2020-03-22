@@ -1,6 +1,46 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://cjhackerz.net/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/ctf/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/hardware/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/iot/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/posts/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/writeup/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/</loc>
+    <lastmod>2020-03-22T00:00:00+00:00</lastmod>
+  </url>
   
   <url>
     <loc>https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/</loc>
@@ -13,27 +53,7 @@
   </url>
   
   <url>
-    <loc>https://cjhackerz.net/</loc>
-    <lastmod>2019-10-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://cjhackerz.net/tags/exploit-dev/</loc>
-    <lastmod>2019-10-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cjhackerz.net/tags/iot/</loc>
-    <lastmod>2019-10-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cjhackerz.net/posts/</loc>
-    <lastmod>2019-10-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cjhackerz.net/tags/</loc>
     <lastmod>2019-10-22T00:00:00+00:00</lastmod>
   </url>
   
@@ -54,11 +74,6 @@
   
   <url>
     <loc>https://cjhackerz.net/posts/can-bus_protocol_pentesting/</loc>
-    <lastmod>2019-08-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cjhackerz.net/tags/hardware/</loc>
     <lastmod>2019-08-17T00:00:00+00:00</lastmod>
   </url>
   

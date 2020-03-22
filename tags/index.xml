@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Chirag Jariwala</title>
@@ -7,10 +7,46 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Tue, 22 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CTF</title>
+      <link>https://cjhackerz.net/tags/ctf/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/ctf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hardware</title>
+      <link>https://cjhackerz.net/tags/hardware/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/hardware/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IoT</title>
+      <link>https://cjhackerz.net/tags/iot/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/iot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Writeup</title>
+      <link>https://cjhackerz.net/tags/writeup/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/writeup/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>ARM</title>
@@ -31,15 +67,6 @@
     </item>
     
     <item>
-      <title>IoT</title>
-      <link>https://cjhackerz.net/tags/iot/</link>
-      <pubDate>Tue, 22 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://cjhackerz.net/tags/iot/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Qemu</title>
       <link>https://cjhackerz.net/tags/qemu/</link>
       <pubDate>Thu, 26 Sep 2019 00:00:00 +0000</pubDate>
@@ -54,15 +81,6 @@
       <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/automotive/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Hardware</title>
-      <link>https://cjhackerz.net/tags/hardware/</link>
-      <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://cjhackerz.net/tags/hardware/</guid>
       <description></description>
     </item>
     
