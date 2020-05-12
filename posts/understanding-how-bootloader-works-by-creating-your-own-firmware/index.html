@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Understanding how bootloader works by creating your own firmware :: Chirag Jariwala — Cyber security analyst and IoT security researcher</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Getting started with memory layouts So in previous blog post on solving CTF challenge created by me on real alike firmware, I did not touched subject of u-boot bootloader in depth and how such firmware was created in first place. Welcome back here again today you will see steps to create your own firmware for qemu and making it work with u-boot. Many of the stuff you might have encoutered during computer science class and you will be amazed how the concepts of fundamental system architecture and operating system works in action." />
+<meta name="keywords" content="cjhackerz" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://cjhackerz.net/posts/understanding-how-bootloader-works-by-creating-your-own-firmware/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+<link rel="stylesheet" href="https://cjhackerz.net/assets/style.css">
+
+  <link rel="stylesheet" href="https://cjhackerz.net/assets/red.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cjhackerz.net/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="https://cjhackerz.net/img/favicon/red.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="cjhackerz" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Understanding how bootloader works by creating your own firmware :: Chirag Jariwala">
+<meta property="og:description" content="In this post you will learn how bootloader works" />
+<meta property="og:url" content="https://cjhackerz.net/posts/understanding-how-bootloader-works-by-creating-your-own-firmware/" />
+<meta property="og:site_name" content="Understanding how bootloader works by creating your own firmware" />
+
+  <meta property="og:image" content="https://cjhackerz.net/img/2020-05-12-010155_1920x1055_scrot.png">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2020-05-11 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    CJHackerz.Net
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/contact">Contact</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/contact">Contact</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://cjhackerz.net/posts/understanding-how-bootloader-works-by-creating-your-own-firmware/">Understanding how bootloader works by creating your own firmware</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-05-11
+    </span>
+    
+    
+    <span class="post-author">::
+      CJHackerz
+    </span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://cjhackerz.net/tags/iot/">IoT</a>&nbsp;
+    
+    #<a href="https://cjhackerz.net/tags/hardware/">Hardware</a>&nbsp;
+    
+  </span>
+  
+
+  
+  <img src="https://cjhackerz.net/img/2020-05-12-010155_1920x1055_scrot.png" class="post-cover" />
+  
+
+  <div class="post-content"><div>
+        <h2 id="getting-started-with-memory-layouts">Getting started with memory layouts<a href="#getting-started-with-memory-layouts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>So in previous blog post on solving CTF challenge created by me on real alike firmware, I did not touched subject of u-boot bootloader in depth and how such firmware was created in first place. Welcome back here again today you will see steps to create your own firmware for qemu and making it work with u-boot. Many of the stuff you might have encoutered during computer science class and you will be amazed how the concepts of fundamental system architecture and operating system works in action.</p>
+<p>First thing you should know is how a typical linux os boots up. Today we will work with emulated ARM Cortex A9 board. Let&rsquo;s have look at memory mapping for Cortex-A9 CPU.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Address range</th>
+<th align="left">Size</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0xE000_0000-0xFFFF_FFFF</td>
+<td align="left">512MB</td>
+<td align="left">External AXI between daughterboards</td>
+</tr>
+<tr>
+<td align="center">0xA000_0000-0xDFFF_FFFF</td>
+<td align="left">1GB</td>
+<td align="left">Daughterboard, private</td>
+</tr>
+<tr>
+<td align="center">0x8000_0000-0x9FFF_FFFF</td>
+<td align="left">512MB</td>
+<td align="left">Local DDR2</td>
+</tr>
+<tr>
+<td align="center">0x8000_0000-0x81FF_FFFF</td>
+<td align="left">64MB</td>
+<td align="left">Remappable memory location</td>
+</tr>
+<tr>
+<td align="center">0x6000_0000-0x7FFF_FFFF</td>
+<td align="left">512MB</td>
+<td align="left">Local DDR2 lower</td>
+</tr>
+<tr>
+<td align="center">0x5C00-0000-0x5FFF_FFFF</td>
+<td align="left">64MB</td>
+<td align="left">Reserved</td>
+</tr>
+<tr>
+<td align="center">0x4000_0000-0x5BFF_FFFF</td>
+<td align="left">448MB</td>
+<td align="left">Motherboard peripherals, typically, memory devices</td>
+</tr>
+<tr>
+<td align="center">0x2000_0000-0x3FFF_FFFF</td>
+<td align="left">512MB</td>
+<td align="left">Reserved</td>
+</tr>
+<tr>
+<td align="center">0x1002_0000-0x1FFF_FFFF</td>
+<td align="left">~256MB</td>
+<td align="left">Daughterboard, private</td>
+</tr>
+<tr>
+<td align="center">0x1000_0000-0x1001_FFFF</td>
+<td align="left">128KB</td>
+<td align="left">Motherboard peripherals, CS7</td>
+</tr>
+<tr>
+<td align="center">0x0000_0000-0x0FFF_FFFF</td>
+<td align="left">64MB</td>
+<td align="left">Remappable memory section</td>
+</tr>
+</tbody>
+</table>
+<p>As you can see above RAM starts at 0x60000000 ends at 0x7FFFFFFF, Cortex-A9 supports upto 1GB RAM so basically for board will have two 512MB RAM banks all data above 512MB+ will be stored at 0x80000000-0x9FFFFFFF memory range. You can verify this in QEMU source code as well.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">a9_daughterboard_init</span>(<span style="color:#66d9ef">const</span> VexpressMachineState <span style="color:#f92672">*</span>vms,
+                                  ram_addr_t ram_size,
+                                  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>cpu_type,
+                                  qemu_irq <span style="color:#f92672">*</span>pic)
+{
+    MachineState <span style="color:#f92672">*</span>machine <span style="color:#f92672">=</span> MACHINE(vms);
+    MemoryRegion <span style="color:#f92672">*</span>sysmem <span style="color:#f92672">=</span> get_system_memory();
+    MemoryRegion <span style="color:#f92672">*</span>lowram <span style="color:#f92672">=</span> g_new(MemoryRegion, <span style="color:#ae81ff">1</span>);
+    ram_addr_t low_ram_size;
+
+    <span style="color:#66d9ef">if</span> (ram_size <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0x40000000</span>) {
+        <span style="color:#75715e">/* 1GB is the maximum the address space permits */</span>
+        error_report(<span style="color:#e6db74">&#34;vexpress-a9: cannot model more than 1GB RAM&#34;</span>);
+        exit(<span style="color:#ae81ff">1</span>);
+    }
+
+    low_ram_size <span style="color:#f92672">=</span> ram_size;
+    <span style="color:#66d9ef">if</span> (low_ram_size <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0x4000000</span>) {
+        low_ram_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x4000000</span>;
+    }
+    <span style="color:#75715e">/* RAM is from 0x60000000 upwards. The bottom 64MB of the
+</span><span style="color:#75715e">     * address space should in theory be remappable to various
+</span><span style="color:#75715e">     * things including ROM or RAM; we always map the RAM there.
+</span><span style="color:#75715e">     */</span>
+    memory_region_init_alias(lowram, NULL, <span style="color:#e6db74">&#34;vexpress.lowmem&#34;</span>, machine<span style="color:#f92672">-&gt;</span>ram,
+                             <span style="color:#ae81ff">0</span>, low_ram_size);
+    memory_region_add_subregion(sysmem, <span style="color:#ae81ff">0x0</span>, lowram);
+    memory_region_add_subregion(sysmem, <span style="color:#ae81ff">0x60000000</span>, machine<span style="color:#f92672">-&gt;</span>ram); <span style="color:#75715e">//RAM start address
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">/* 0x1e000000 A9MPCore (SCU) private memory region */</span>
+    init_cpus(machine, cpu_type, TYPE_A9MPCORE_PRIV, <span style="color:#ae81ff">0x1e000000</span>, pic,
+              vms<span style="color:#f92672">-&gt;</span>secure, vms<span style="color:#f92672">-&gt;</span>virt);
+
+    <span style="color:#75715e">/* Daughterboard peripherals : 0x10020000 .. 0x20000000 */</span>
+
+    <span style="color:#75715e">/* 0x10020000 PL111 CLCD (daughterboard) */</span>
+    sysbus_create_simple(<span style="color:#e6db74">&#34;pl111&#34;</span>, <span style="color:#ae81ff">0x10020000</span>, pic[<span style="color:#ae81ff">44</span>]);
+
+    <span style="color:#75715e">/* 0x10060000 AXI RAM */</span>
+    <span style="color:#75715e">/* 0x100e0000 PL341 Dynamic Memory Controller */</span>
+    <span style="color:#75715e">/* 0x100e1000 PL354 Static Memory Controller */</span>
+    <span style="color:#75715e">/* 0x100e2000 System Configuration Controller */</span>
+
+    sysbus_create_simple(<span style="color:#e6db74">&#34;sp804&#34;</span>, <span style="color:#ae81ff">0x100e4000</span>, pic[<span style="color:#ae81ff">48</span>]);
+    <span style="color:#75715e">/* 0x100e5000 SP805 Watchdog module */</span>
+    <span style="color:#75715e">/* 0x100e6000 BP147 TrustZone Protection Controller */</span>
+    <span style="color:#75715e">/* 0x100e9000 PL301 &#39;Fast&#39; AXI matrix */</span>
+    <span style="color:#75715e">/* 0x100ea000 PL301 &#39;Slow&#39; AXI matrix */</span>
+    <span style="color:#75715e">/* 0x100ec000 TrustZone Address Space Controller */</span>
+    <span style="color:#75715e">/* 0x10200000 CoreSight debug APB */</span>
+    <span style="color:#75715e">/* 0x1e00a000 PL310 L2 Cache Controller */</span>
+    sysbus_create_varargs(<span style="color:#e6db74">&#34;l2x0&#34;</span>, <span style="color:#ae81ff">0x1e00a000</span>, NULL);
+}
+</code></pre></div><p><a href="https://github.com/qemu/qemu/blob/master/hw/arm/vexpress.c">https://github.com/qemu/qemu/blob/master/hw/arm/vexpress.c</a></p>
+<p>One more thing to know is address of flash memory from which during boot process we will load things into RAM such as kernel, filesystem/ramfs and device tree blob ((<a href="https://en.wikipedia.org/wiki/Device_tree">dtb</a>). In qemu Cortex-A9 board will have two Parallel NOR Flash of 64MB. So while making firmware maximum filesize we can use for firmware binary would be 128MB and pass to -pflash option when starting virtual machine. You can check out datasheets of these kind parallel NOR flash chips out in market <a href="https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/parallel/m29ew/m29ew_32mb_128mb.pdf">https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/parallel/m29ew/m29ew_32mb_128mb.pdf</a> as real example. Enough jumping around lets again peek into Qemu source code.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> hwaddr motherboard_legacy_map[] <span style="color:#f92672">=</span> {
+    [VE_NORFLASHALIAS] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+    <span style="color:#75715e">/* CS7: 0x10000000 .. 0x10020000 */</span>
+    [VE_SYSREGS] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10000000</span>,
+    [VE_SP810] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10001000</span>,
+    [VE_SERIALPCI] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10002000</span>,
+    [VE_PL041] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10004000</span>,
+    [VE_MMCI] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10005000</span>,
+    [VE_KMI0] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10006000</span>,
+    [VE_KMI1] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10007000</span>,
+    [VE_UART0] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10009000</span>,
+    [VE_UART1] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1000a000</span>,
+    [VE_UART2] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1000b000</span>,
+    [VE_UART3] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1000c000</span>,
+    [VE_WDT] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1000f000</span>,
+    [VE_TIMER01] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10011000</span>,
+    [VE_TIMER23] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10012000</span>,
+    [VE_VIRTIO] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10013000</span>,
+    [VE_SERIALDVI] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10016000</span>,
+    [VE_RTC] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10017000</span>,
+    [VE_COMPACTFLASH] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1001a000</span>,
+    [VE_CLCD] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1001f000</span>,
+    <span style="color:#75715e">/* CS0: 0x40000000 .. 0x44000000 */</span>
+    [VE_NORFLASH0] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x40000000</span>,            <span style="color:#75715e">//First 64MB parallel NOR flash
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/* CS1: 0x44000000 .. 0x48000000 */</span>
+    [VE_NORFLASH1] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x44000000</span>,            <span style="color:#75715e">//Second 64MB parallel NOR flash
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/* CS2: 0x48000000 .. 0x4a000000 */</span>
+    [VE_SRAM] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x48000000</span>,
+    <span style="color:#75715e">/* CS3: 0x4c000000 .. 0x50000000 */</span>
+    [VE_VIDEORAM] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x4c000000</span>,
+    [VE_ETHERNET] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x4e000000</span>,
+    [VE_USB] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x4f000000</span>,
+};
+</code></pre></div><p>Putting these all information togather we get following ranges for RAM and flash memory</p>
+<table>
+<thead>
+<tr>
+<th align="center">Memory Address Range</th>
+<th align="left">Size</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0x60000000-0x7FFFFFFF</td>
+<td align="left">512MB</td>
+<td align="left">RAM &lt;= 512MB</td>
+</tr>
+<tr>
+<td align="center">0x80000000-0x9FFFFFFF</td>
+<td align="left">512MB</td>
+<td align="left">RAM &gt; 512MB</td>
+</tr>
+<tr>
+<td align="center">0x40000000-0x44000000</td>
+<td align="left">64MB</td>
+<td align="left">NOR FLASH 1</td>
+</tr>
+<tr>
+<td align="center">0x48000000-0x4a000000</td>
+<td align="left">64MB</td>
+<td align="left">NOR FLASH 2</td>
+</tr>
+</tbody>
+</table>
+<p>In this tutorial we will be only using 512MB RAM and NOR FLASH 1. Now lets see the build process</p>
+<h2 id="kernel-file-system-and-u-boot-compilation">kernel, file system and u-boot compilation<a href="#kernel-file-system-and-u-boot-compilation" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Whenever I meet new people in infosec most of us are always seem to be affraid of compiling stuff from scratch but trust me with enough of practice you will develop intuition and thanks to age of automation it&rsquo;s more fun to do now these days.</p>
+<h3 id="kernel-compilation-steps">Kernel compilation steps<a href="#kernel-compilation-steps" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Download latest stable kernel from <a href="https://www.kernel.org/">https://www.kernel.org/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.6.12.tar.xz
+</code></pre></div><p>Now you need to install ARM cross compiler since target CPU we are dealing with is ARM</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt update <span style="color:#f92672">&amp;&amp;</span> sudo apt install gcc-arm-none-eabi -y
+</code></pre></div><p>Generate intial configuration file</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi- vexpress_defconfig
+</code></pre></div><p>You can edit options with menuconfig, this step is optional like if you know what you are doing and which functionalities inside kernel you want to enable. Most of the time for research purposes people like to enable kernel debugging related ones. But for this post u can directly compile and boot into basic system without doing anything extra and skip command below.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi- menuconfig
+</code></pre></div>
+  <figure class="center" >
+    <img src="/img/2020-05-12-035635_1920x1055_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >menuconfig</figcaption>
+    
+  </figure>
+
+
+<p>After configuring desired options you can start compilation</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make -j<span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span> ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi-
+</code></pre></div>
+  <figure class="center" >
+    <img src="/img/2020-05-12-043541_1920x1055_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >kernel compilation in progress</figcaption>
+    
+  </figure>
+
+
+<p>Grab cup of coffee because it&rsquo;s gonna take some few 5-10min (depending on your system specs)</p>
+<p>Once finished kernel zImage file should be at /arch/arm/boot in present working directory. Now copy compiled zImage and vexpress-v2p-ca9.dtb (Device Tree Blob) to your desired location.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp ./arch/arm/boot/zImage ~/my_firmware <span style="color:#f92672">&amp;&amp;</span> cp ./arch/arm/boot/dts/vexpress-v2p-ca9.dtb ~/my_firmware
+</code></pre></div><p>Test them with qemu</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M vexpress-a9 -m 512M -kernel zImage -dtb vexpress-v2p-ca9.dtb -nographic
+</code></pre></div><p><strong>Output from successful boot</strong></p>
+<pre><code class="language-console" data-lang="console">Booting Linux on physical CPU 0x0Linux version 5.6.12cjhackerz-arm-kernel (cjhackerz@pwn-machine) (gcc version 9.3.0 (Arch Repository)) #1 SMP Tue May 12 04:33:08 IST 2020
+CPU: ARMv7 Processor [410fc090] revision 0 (ARMv7), cr=10c5387d
+CPU: PIPT / VIPT nonaliasing data cache, VIPT nonaliasing instruction cache
+OF: fdt: Machine model: V2P-CA9
+Memory policy: Data cache writeback
+Reserved memory: created DMA memory pool at 0x4c000000, size 8 MiB
+OF: reserved mem: initialized node vram@4c000000, compatible id shared-dma-pool
+cma: Reserved 16 MiB at 0x7f000000
+CPU: All CPU(s) started in SVC mode.
+percpu: Embedded 19 pages/cpu s45708 r8192 d23924 u77824
+Built 1 zonelists, mobility grouping on.  Total pages: 130048
+Kernel command line: console=ttyAMA0
+printk: log_buf_len individual max cpu contribution: 4096 bytes
+printk: log_buf_len total cpu_extra contributions: 12288 bytes
+printk: log_buf_len min size: 16384 bytes
+printk: log_buf_len: 32768 bytes
+printk: early log buf free: 14864(90%)
+Dentry cache hash table entries: 65536 (order: 6, 262144 bytes, linear)
+Inode-cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+mem auto-init: stack:off, heap alloc:off, heap free:off
+Memory: 491996K/524288K available (7168K kernel code, 511K rwdata, 1732K rodata, 1024K init, 177K bss, 15908K reserved, 16384K cma-reserved)
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+rcu: Hierarchical RCU implementation.
+rcu: 	RCU event tracing is enabled.
+rcu: 	RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=4.
+rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+GIC CPU mask not found - kernel will fail to boot.
+GIC CPU mask not found - kernel will fail to boot.
+L2C: platform modifies aux control register: 0x02020000 -&gt; 0x02420000
+L2C: DT/platform modifies aux control register: 0x02020000 -&gt; 0x02420000
+L2C-310 enabling early BRESP for Cortex-A9
+L2C-310 full line of zeros enabled for Cortex-A9
+L2C-310 dynamic clock gating disabled, standby mode disabled
+L2C-310 cache controller enabled, 8 ways, 128 kB
+L2C-310: CACHE_ID 0x410000c8, AUX_CTRL 0x46420001
+random: get_random_bytes called from start_kernel+0x2fc/0x498 with crng_init=0
+sched_clock: 32 bits at 24MHz, resolution 41ns, wraps every 89478484971ns
+clocksource: arm,sp804: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275 ns
+Failed to initialize '/smb@4000000/motherboard/iofpga@7,00000000/timer@12000': -22
+smp_twd: clock not found -2
+Console: colour dummy device 80x30
+Calibrating local timer... 92.29MHz.
+Calibrating delay loop... 580.40 BogoMIPS (lpj=2902016)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+CPU: Testing write buffer coherency: ok
+CPU0: Spectre v2: using BPIALL workaround
+CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
+Setting up static identity map for 0x60100000 - 0x60100060
+rcu: Hierarchical SRCU implementation.
+smp: Bringing up secondary CPUs ...
+smp: Brought up 1 node, 1 CPU
+SMP: Total of 1 processors activated (580.40 BogoMIPS).
+CPU: All CPU(s) started in SVC mode.
+devtmpfs: initialized
+VFP support v0.3: implementor 41 architecture 3 part 30 variant 9 rev 0
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+NET: Registered protocol family 16
+DMA: preallocated 256 KiB pool for atomic coherent allocations
+cpuidle: using governor ladder
+hw-breakpoint: debug architecture 0x4 unsupported.
+Serial: AMBA PL011 UART driver
+10009000.uart: ttyAMA0 at MMIO 0x10009000 (irq = 29, base_baud = 0) is a PL011 rev1
+printk: console [ttyAMA0] enabled
+1000a000.uart: ttyAMA1 at MMIO 0x1000a000 (irq = 30, base_baud = 0) is a PL011 rev1
+1000b000.uart: ttyAMA2 at MMIO 0x1000b000 (irq = 31, base_baud = 0) is a PL011 rev1
+1000c000.uart: ttyAMA3 at MMIO 0x1000c000 (irq = 32, base_baud = 0) is a PL011 rev1
+OF: amba_device_add() failed (-19) for /smb@4000000/motherboard/iofpga@7,00000000/wdt@f000
+OF: amba_device_add() failed (-19) for /memory-controller@100e0000
+OF: amba_device_add() failed (-19) for /memory-controller@100e1000
+OF: amba_device_add() failed (-19) for /watchdog@100e5000
+irq: type mismatch, failed to map hwirq-75 for interrupt-controller@1e001000!
+SCSI subsystem initialized
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+Advanced Linux Sound Architecture Driver Initialized.
+clocksource: Switched to clocksource arm,sp804
+NET: Registered protocol family 2
+tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 6144 bytes, linear)
+TCP established hash table entries: 4096 (order: 2, 16384 bytes, linear)
+TCP bind hash table entries: 4096 (order: 3, 32768 bytes, linear)
+TCP: Hash tables configured (established 4096 bind 4096)
+UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+NET: Registered protocol family 1
+RPC: Registered named UNIX socket transport module.
+RPC: Registered udp transport module.
+RPC: Registered tcp transport module.
+RPC: Registered tcp NFSv4.1 backchannel transport module.
+hw perfevents: enabled with armv7_cortex_a9 PMU driver, 5 counters available
+workingset: timestamp_bits=30 max_order=17 bucket_order=0
+squashfs: version 4.0 (2009/01/31) Phillip Lougher
+jffs2: version 2.2. (NAND) © 2001-2006 Red Hat, Inc.
+9p: Installing v9fs 9p2000 file system support
+jitterentropy: Initialization failed with host not compliant with requirements: 2
+io scheduler mq-deadline registered
+io scheduler kyber registered
+i2c i2c-0: Added multiplexed i2c bus 2
+drm-clcd-pl111 1001f000.clcd: assigned reserved memory node vram@4c000000
+drm-clcd-pl111 1001f000.clcd: using device-specific reserved memory
+drm-clcd-pl111 1001f000.clcd: initializing Versatile Express PL111
+drm-clcd-pl111 1001f000.clcd: core tile graphics present
+drm-clcd-pl111 1001f000.clcd: this device will be deactivated
+Error: Driver 'vexpress-muxfpga' is already registered, aborting...
+drm-clcd-pl111 10020000.clcd: initializing Versatile Express PL111
+drm-clcd-pl111 10020000.clcd: DVI muxed to daughterboard 1 (core tile) CLCD
+drm-clcd-pl111 10020000.clcd: found bridge on endpoint 0
+drm-clcd-pl111 10020000.clcd: Using non-panel bridge
+[drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[drm] No driver support for vblank timestamp query.
+[drm] Initialized pl111 1.0.0 20170317 for 10020000.clcd on minor 0
+Console: switching to colour frame buffer device 128x48
+drm-clcd-pl111 10020000.clcd: fb0: pl111drmfb frame buffer device
+physmap-flash 40000000.flash: physmap platform flash device: [mem 0x40000000-0x43ffffff]
+40000000.flash: Found 2 x16 devices at 0x0 in 32-bit bank. Manufacturer ID 0x000000 Chip ID 0x000000
+Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+physmap-flash 40000000.flash: physmap platform flash device: [mem 0x44000000-0x47ffffff]
+40000000.flash: Found 2 x16 devices at 0x0 in 32-bit bank. Manufacturer ID 0x000000 Chip ID 0x000000
+Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+Concatenating MTD devices:
+(0): &quot;40000000.flash&quot;
+(1): &quot;40000000.flash&quot;
+into device &quot;40000000.flash&quot;
+physmap-flash 48000000.psram: physmap platform flash device: [mem 0x48000000-0x49ffffff]
+libphy: Fixed MDIO Bus: probed
+libphy: smsc911x-mdio: probed
+smsc911x 4e000000.ethernet eth0: MAC Address: 52:54:00:12:34:56
+isp1760 4f000000.usb: bus width: 32, oc: digital
+isp1760 4f000000.usb: NXP ISP1760 USB Host Controller
+isp1760 4f000000.usb: new USB bus registered, assigned bus number 1
+isp1760 4f000000.usb: Scratch test failed.
+isp1760 4f000000.usb: can't setup: -19
+isp1760 4f000000.usb: USB bus 1 deregistered
+usbcore: registered new interface driver usb-storage
+rtc-pl031 10017000.rtc: registered as rtc0
+mmci-pl18x 10005000.mmci: Got CD GPIO
+mmci-pl18x 10005000.mmci: Got WP GPIO
+mmci-pl18x 10005000.mmci: mmc0: PL181 manf 41 rev0 at 0x10005000 irq 25,26 (pio)
+ledtrig-cpu: registered to indicate activity on CPUs
+usbcore: registered new interface driver usbhid
+usbhid: USB HID core driver
+aaci-pl041 10004000.aaci: ARM AC'97 Interface PL041 rev0 at 0x10004000, irq 24
+aaci-pl041 10004000.aaci: FIFO 512 entries
+oprofile: using arm/armv7-ca9
+NET: Registered protocol family 17
+9pnet: Installing 9P2000 support
+Registering SWP/SWPB emulation handler
+rtc-pl031 10017000.rtc: setting system clock to 2020-05-11T23:34:36 UTC (1589240076)
+ALSA device list:
+  #0: ARM AC'97 Interface PL041 rev0 at 0x10004000, irq 24
+input: AT Raw Set 2 keyboard as /devices/platform/smb@4000000/smb@4000000:motherboard/smb@4000000:motherboard:iofpga@7,00000000/10006000.kmi/serio0/input/input0
+input: ImExPS/2 Generic Explorer Mouse as /devices/platform/smb@4000000/smb@4000000:motherboard/smb@4000000:motherboard:iofpga@7,00000000/10007000.kmi/serio1/input/input2
+VFS: Cannot open root device &quot;(null)&quot; or unknown-block(0,0): error -6
+Please append a correct &quot;root=&quot; boot option; here are the available partitions:
+1f00          131072 mtdblock0 
+ (driver?)
+1f01           32768 mtdblock1 
+ (driver?)
+Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.6.12cjhackerz-arm-kernel #1
+Hardware name: ARM-Versatile Express
+[&lt;801124f8&gt;] (unwind_backtrace) from [&lt;8010cc6c&gt;] (show_stack+0x10/0x14)
+[&lt;8010cc6c&gt;] (show_stack) from [&lt;807a48b8&gt;] (dump_stack+0x90/0xa4)
+[&lt;807a48b8&gt;] (dump_stack) from [&lt;8012b12c&gt;] (panic+0x104/0x304)
+[&lt;8012b12c&gt;] (panic) from [&lt;80a01504&gt;] (mount_block_root+0x1ec/0x280)
+[&lt;80a01504&gt;] (mount_block_root) from [&lt;80a016bc&gt;] (mount_root+0x124/0x140)
+[&lt;80a016bc&gt;] (mount_root) from [&lt;80a0182c&gt;] (prepare_namespace+0x154/0x190)
+[&lt;80a0182c&gt;] (prepare_namespace) from [&lt;807bc05c&gt;] (kernel_init+0x8/0x110)
+[&lt;807bc05c&gt;] (kernel_init) from [&lt;801010e8&gt;] (ret_from_fork+0x14/0x2c)
+Exception stack(0x9e493fb0 to 0x9e493ff8)
+3fa0:                                     00000000 00000000 00000000 00000000
+3fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+---[ end Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0) ]---
+</code></pre><p>If everything was done correctly till now your kernel should boot and stop at kernel panic. Don&rsquo;t worry it&rsquo;s okay because kernel was not able to find root file system. To exit out of qemu press <code>Ctrl+a x</code> (control a and then x).</p>
+<h3 id="creating-ramdisk-for-root-filesystem-in-ram-with-buildroot">Creating ramdisk for root filesystem in RAM with buildroot<a href="#creating-ramdisk-for-root-filesystem-in-ram-with-buildroot" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Get cross compiler for our userspace programs</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install binutils-arm-linux-gnueabi gcc-arm-linux-gnueabi g++-arm-linux-gnueabi -y
+</code></pre></div><p>Download latest stable buildroot release <a href="https://buildroot.org/download.html">https://buildroot.org/download.html</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://buildroot.org/downloads/buildroot-2020.02.1.tar.gz <span style="color:#f92672">&amp;&amp;</span> tar -xvf 
+</code></pre></div><p>Generate .config file</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd buildroot-2020.02.1 <span style="color:#f92672">&amp;&amp;</span> make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabi- qemu_arm_vexpress_defconfig
+</code></pre></div><p>Now we need to edit config and tell buildroot to generate gzip compressed ramdisk</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabi- xconfig
+</code></pre></div>
+  <figure class="center" >
+    <img src="/img/2020-05-12-054300_937x1027_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >File system images &gt; cpio the root file system</figcaption>
+    
+  </figure>
+
+
+<p>You can can also install some software such as Apache web server, tinyssh (SSH server) etc. from <strong>Target packages</strong> menu. Go to <strong>Kernel</strong> menu and uncheck it since we already build it seprately. When ready just do make. It will download stuff and start compilation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make -j<span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span> ARCH<span style="color:#f92672">=</span>arm
+</code></pre></div><p>Time to get another cup of coffee this is gonna take more than hour :D</p>
+
+  <figure class="center" >
+    <img src="/img/2020-05-12-072442_1920x1055_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Successful compilation of filesystem</figcaption>
+    
+  </figure>
+
+
+<p>Your prepared filesystem files can be found under <strong>output/images</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp ./output/images/rootfs.cpio.gz ~/my_firmware
+</code></pre></div><p>To test everything now you can directly boot into system from your files</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M vexpress-a9 -m 512M <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-kernel zImage -dtb vexpress-v2p-ca9.dtb <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-initrd rootfs.cpio.gz <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>-append <span style="color:#e6db74">&#34;root=/dev/ram console=ttyAMA0,38400n8&#34;</span> -nographic
+</code></pre></div><h3 id="time-to-build-u-boot-and-configure-it">Time to build u-boot and configure it<a href="#time-to-build-u-boot-and-configure-it" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>There are many ways to boot os from u-boot but today we will see single component uImage booting (<a href="http://www.denx.de/wiki/pub/U-Boot/Documentation/multi_image_booting_scenarios.pdf)">http://www.denx.de/wiki/pub/U-Boot/Documentation/multi_image_booting_scenarios.pdf)</a>. uImage fileformat is wrapper for u-boot. It tells bootloader where to load given uImage file in memory, what kind of file it is (kernel, ramdisk, dtb etc) and is there any compression present or not.</p>
+<p>Whenever linux system boots, bootloader puts kernel at start of RAM. After that intial filesystem and dtb is loaded into ram. Bootloader execute kernel by passing required kernel arguments. Think kernel as big binary program just like <strong>.ELF</strong> file. And like any other program it takes some arguments for example if you type <code>ls -a</code> it shows you all files and for <code>ls -al</code> is shows you all files with permission details. Format for kernel argument is <code>var1=value1 var2=value2</code></p>
+<p>For booting from u-boot we will pass following kernel arguments to kernel
+<code>root=/dev/ram console=ttyAMA0,38400n8</code>
+Above arguments tells kernel to seek root filesystem in ram and set console output to serial port on specified baudrate.</p>
+<p>Let&rsquo;s download and compile u-boot from source, pick any most recent version from <a href="https://ftp.denx.de/pub/u-boot/">https://ftp.denx.de/pub/u-boot/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://ftp.denx.de/pub/u-boot/u-boot-2020.04.tar.bz2 <span style="color:#f92672">&amp;&amp;</span> tar -xvf u-boot-2020.04.tar.bz2
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd u-boot-2020.04 <span style="color:#f92672">&amp;&amp;</span> make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi- vexpress_ca9x4_defconfig <span style="color:#f92672">&amp;&amp;</span> make -j<span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span> ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi-
+</code></pre></div><p>Finally copy it to our project directory</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp ./u-boot ~/my_firmware
+</code></pre></div><p>To test it we will pass file to -kernel option in qemu will put it at start of ram so it will directly boot into u-boot bootloader.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M vexpress-a9 -m 512M -kernel u-boot
+</code></pre></div><pre><code class="language-console" data-lang="console">U-Boot 2020.04 (May 12 2020 - 08:55:56 +0530)
+
+DRAM:  512 MiB
+WARNING: Caches not enabled
+Flash: 128 MiB
+MMC:   MMC: 0
+*** Warning - bad CRC, using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   smc911x-0
+Hit any key to stop autoboot:  0 
+MMC Device 1 not found
+no mmc device at slot 1
+Card did not respond to voltage select!
+smc911x: MAC 52:54:00:12:34:56
+smc911x: detected LAN9118 controller
+smc911x: phy initialized
+smc911x: MAC 52:54:00:12:34:56
+BOOTP broadcast 1
+DHCP client bound to address 10.0.2.15 (3 ms)
+*** Warning: no boot file name; using '0A00020F.img'
+Using smc911x-0 device
+TFTP from server 10.0.2.2; our IP address is 10.0.2.15
+Filename '0A00020F.img'.
+smc911x: MAC 52:54:00:12:34:56
+...
+TFTP error: trying to overwrite reserved memory...
+smc911x: MAC 52:54:00:12:34:56
+Wrong Image Format for bootm command
+ERROR: can't get kernel image!
+</code></pre><p>If u get output as shown above it means now we can finally create our firmware image file</p>
+<p>One last information you should be aware of is that after u-boot executes it will reallocate itself to  0x60800000 (+8MB from start of the RAM).</p>
+
+  <figure class="center" >
+    <img src="/img/u-boot-reallocation.gif"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >U-boot self reallocation</figcaption>
+    
+  </figure>
+
+
+
+  <figure class="center" >
+    <img src="/img/2020-05-12-095115_1920x1080_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >U-boot self reallocation hexdump and RAM comparison</figcaption>
+    
+  </figure>
+
+
+<p>This to make some space free for kernel and filesystem because after boot kernel will go at the start of the RAM. We need to know filesize of all files to avoid overwriting in memory by providing enough space between them. I decided to have approx 2MB distance between each file which gets loaded into RAM.</p>
+<pre><code class="language-console" data-lang="console">ls -al --block-size=K zImage rootfs.cpio.gz vexpress-v2p-ca9.dtb u-boot
+-rw-r--r-- 1 cjhackerz cjhackerz 6294K May 12 07:59 rootfs.cpio.gz
+-rwxr-xr-x 1 cjhackerz cjhackerz 4761K May 12 09:00 u-boot
+-rw-r--r-- 1 cjhackerz cjhackerz   14K May 12 04:59 vexpress-v2p-ca9.dtb
+-rwxr-xr-x 1 cjhackerz cjhackerz 4653K May 12 04:59 zImage
+</code></pre><p>Our kernel(zImage) is almost 5MB, ramdisk(rootfs.cpio.gz) 6.5MB and device tree blob (vexpress-v2p-ca9.dtb) 14KB so basically we want to put our u-boot after 16MB (Address: 0x61000000) from start of the RAM. So our final memory mapping in RAM should be as table below:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Address</th>
+<th align="left">Offset (from start of the RAM)</th>
+<th align="left">Filename</th>
+<th align="left">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">0x60010000</td>
+<td align="left">0x10000(64KB)</td>
+<td align="left">zImage</td>
+<td align="left">4.5MB</td>
+</tr>
+<tr>
+<td align="left">0x60600000</td>
+<td align="left">0x600000(6MB)</td>
+<td align="left">rootfs.cpio.gz</td>
+<td align="left">6.1MB</td>
+</tr>
+</tbody>
+</table>
+<p>Now create uImage files for u-boot</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkimage -A arm -C none -O linux -T kernel -d zImage -a 0x60010000 -e 0x60010000 kernel.uImage
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkimage -A arm -C gzip -O linux -T ramdisk -d rootfs.cpio.gz -a 0x60600000 -e 0x60600000 rootfs.uImage
+</code></pre></div><p>Now we need to output them to packed firmware file. To do that we will do is copy files from TFTP server to particular addresses empty NOR flash. And qemu will automatically store output of flash contents of our files once data is copied to it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install -y tftpd-hpa <span style="color:#f92672">&amp;&amp;</span> sudo systemctl enable tftpd-hpa <span style="color:#f92672">&amp;&amp;</span> sudo systemctl restart tftpd-hpa
+</code></pre></div><p>Copy files to server root</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cp *.uImage zImage rootfs.cpio.gz /srv/tftp/
+</code></pre></div><p>Start u-boot with -kernel option (let autoboot finish with error) and pass empty file to -pflash option</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>/dev/zero of<span style="color:#f92672">=</span>firmware.bin bs<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> count<span style="color:#f92672">=</span>64M
+</code></pre></div><p>Note: Please follow my <a href="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/">ARM lab setup</a> guide to setup NAT networking in qemu.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo qemu-system-arm -M vexpress-a9 -m 512M -kernel u-boot -pflash firmware.bin -nic tap
+</code></pre></div><p>Follow steps in video given below</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/SFM2ZPIwCCo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<p>So I am loading kernel.uImage at address 0x61000000, rootfs.uImage at 0x62000000 and vexpress-v2p-ca9.dtb at 0x63000000</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp <span style="color:#f92672">[</span>source address of RAM<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>destination address in flash<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>number of bytes in hex<span style="color:#f92672">]</span>
+</code></pre></div><p>So we will be copying data to RAM from TFTP and from RAM to flash memory. In NOR Flash I leaving 1 sector empty so in flinfo command in u-boot I can visually see from padding that after empty sector new file beings. Before writing to flash you have to turn of write protection and format it with erase command.</p>
+<pre><code class="language-console" data-lang="console">=&gt; flinfo
+
+Bank # 1: CFI conformant flash (32 x 16)  Size: 64 MB in 256 Sectors
+  Intel Extended command set, Manufacturer ID: 0x89, Device ID: 0x0018
+  Erase timeout: 16384 ms, write timeout: 3 ms
+  Buffer write timeout: 3 ms, buffer size: 2048 bytes
+
+  Sector Start Addresses:
+  40000000 E RO   40040000   RO   40080000        400C0000        40100000      
+  40140000        40180000        401C0000        40200000        40240000      
+  40280000        402C0000        40300000        40340000        40380000      
+  403C0000        40400000        40440000        40480000        404C0000      
+  40500000        40540000        40580000        405C0000        40600000      
+  40640000        40680000        406C0000        40700000        40740000      
+  40780000        407C0000        40800000        40840000        40880000      
+  408C0000        40900000        40940000        40980000        409C0000      
+  40A00000        40A40000        40A80000        40AC0000        40B00000      
+  40B40000        40B80000        40BC0000        40C00000        40C40000      
+  40C80000        40CC0000        40D00000        40D40000        40D80000      
+  40DC0000        40E00000        40E40000        40E80000        40EC0000      
+  40F00000        40F40000        40F80000        40FC0000        41000000      
+  41040000        41080000        410C0000        41100000        41140000      
+  41180000        411C0000        41200000        41240000        41280000 E    
+  412C0000        41300000        41340000        41380000        413C0000      
+  41400000        41440000        41480000        414C0000        41500000      
+  41540000        41580000        415C0000        41600000        41640000      
+  41680000        416C0000        41700000        41740000        41780000      
+  417C0000        41800000        41840000        41880000        418C0000      
+  41900000        41940000        41980000        419C0000        41A00000      
+  41A40000        41A80000        41AC0000        41B00000        41B40000      
+  41B80000        41BC0000        41C00000        41C40000        41C80000      
+  41CC0000        41D00000        41D40000        41D80000        41DC0000      
+  41E00000        41E40000        41E80000        41EC0000        41F00000      
+  41F40000        41F80000        41FC0000        42000000        42040000      
+  42080000        420C0000        42100000        42140000        42180000      
+  421C0000        42200000        42240000        42280000        422C0000      
+  42300000        42340000        42380000        423C0000        42400000      
+  42440000        42480000        424C0000        42500000        42540000      
+  42580000        425C0000        42600000        42640000        42680000      
+  426C0000        42700000        42740000        42780000        427C0000      
+  42800000        42840000        42880000        428C0000        42900000      
+  42940000        42980000        429C0000        42A00000        42A40000      
+  42A80000        42AC0000        42B00000        42B40000        42B80000 E    
+  42BC0000        42C00000 E      42C40000 E      42C80000 E      42CC0000 E    
+  42D00000 E      42D40000 E      42D80000 E      42DC0000 E      42E00000 E    
+  42E40000 E      42E80000 E      42EC0000 E      42F00000 E      42F40000 E    
+  42F80000 E      42FC0000 E      43000000 E      43040000 E      43080000 E    
+  430C0000 E      43100000 E      43140000 E      43180000 E      431C0000 E    
+  43200000 E      43240000 E      43280000 E      432C0000 E      43300000 E    
+  43340000 E      43380000 E      433C0000 E      43400000 E      43440000 E    
+  43480000 E      434C0000 E      43500000 E      43540000 E      43580000 E    
+  435C0000 E      43600000 E      43640000 E      43680000 E      436C0000 E    
+  43700000 E      43740000 E      43780000 E      437C0000 E      43800000 E    
+  43840000 E      43880000 E      438C0000 E      43900000 E      43940000 E    
+  43980000 E      439C0000 E      43A00000 E      43A40000 E      43A80000 E    
+  43AC0000 E      43B00000 E      43B40000 E      43B80000 E      43BC0000 E    
+  43C00000 E      43C40000 E      43C80000 E      43CC0000 E      43D00000 E    
+  43D40000 E      43D80000 E      43DC0000 E      43E00000 E      43E40000 E    
+  43E80000 E      43EC0000 E      43F00000 E      43F40000 E      43F80000 E    
+  43FC0000 E
+</code></pre><p>So I ended up with following mapping in NOR flash:</p>
+<ul>
+<li>40040000 [kernel.uImage]</li>
+<li>412C0000 [rootfs.uImage]</li>
+<li>42BC0000 [vexpress-v2p-ca9.dtb]</li>
+</ul>
+<p>After copying data to flash just directly close your qemu. Changes will now show up in firmware.bin file.</p>
+<pre><code class="language-console" data-lang="console">binwalk firmware.bin 
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+262144        0x40000         uImage header, header size: 64 bytes, header CRC: 0xFCAABEFB, created: 2020-05-12 05:37:13, image size: 4763936 bytes, Data Address: 0x60010000, Entry Point: 0x60010000, data CRC: 0x92589585, OS: Linux, CPU: ARM, image type: OS Kernel Image, compression type: none, image name: &quot;&quot;
+262208        0x40040         Linux kernel ARM boot executable zImage (little-endian)
+280824        0x448F8         gzip compressed data, maximum compression, from Unix, last modified: 1970-01-01 00:00:00 (null date)
+17039360      0x1040000       uImage header, header size: 64 bytes, header CRC: 0xB41113D6, created: 2020-05-12 05:37:40, image size: 6444900 bytes, Data Address: 0x60600000, Entry Point: 0x60600000, data CRC: 0x6711A199, OS: Linux, CPU: ARM, image type: RAMDisk Image, compression type: gzip, image name: &quot;&quot;
+17039424      0x1040040       gzip compressed data, maximum compression, from Unix, last modified: 1970-01-01 00:00:00 (null date)
+19660800      0x12C0000       uImage header, header size: 64 bytes, header CRC: 0xB41113D6, created: 2020-05-12 05:37:40, image size: 6444900 bytes, Data Address: 0x60600000, Entry Point: 0x60600000, data CRC: 0x6711A199, OS: Linux, CPU: ARM, image type: RAMDisk Image, compression type: gzip, image name: &quot;&quot;
+19660864      0x12C0040       gzip compressed data, maximum compression, from Unix, last modified: 1970-01-01 00:00:00 (null date)
+22576367      0x1587CEF       MySQL MISAM index file Version 7
+45875200      0x2BC0000       device tree image (dtb)
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd u-boot-2020.04 <span style="color:#f92672">&amp;&amp;</span> make ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi- menuconfig
+</code></pre></div><p><em>Enable boot arguments (press space to select option) below that option press enter to input our boot argument</em></p>
+
+  <figure class="center" >
+    <img src="/img/2020-05-12-144612_1920x1080_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Entering value for bootargs</figcaption>
+    
+  </figure>
+
+
+<p><em>Enable a default value for bootcmd</em></p>
+
+  <figure class="center" >
+    <img src="/img/2020-05-12-144802_1920x1080_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Entering value for bootargs</figcaption>
+    
+  </figure>
+
+
+
+  <figure class="center" >
+    <img src="/img/2020-05-12-144812_1920x1080_scrot.png"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Entering value for bootargs</figcaption>
+    
+  </figure>
+
+
+<p>Exit and Save changes finally compile it again</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make -j<span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span> ARCH<span style="color:#f92672">=</span>arm CROSS_COMPILE<span style="color:#f92672">=</span>arm-none-eabi-
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp u-boot ~/my_firmware/u-boot-flashboot
+</code></pre></div><h2 id="testing-for-one-last-time">Testing for one last time<a href="#testing-for-one-last-time" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">qemu-system-arm -M vexpress-a9 -m 512M -kernel u-boot-flashboot -pflash firmware.bin -nographic
+</code></pre></div>
+  <figure class="center" >
+    <img src="/img/successful_NORflash_boot.gif"  alt="screenshot"   style="border-radius: 10px;"  />
+    
+      <figcaption class="center"  style="color: white;" >Final outcome</figcaption>
+    
+  </figure>
+
+
+<h2 id="theend">TheEnd<a href="#theend" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>And that&rsquo;s it. Yes indeeed it is bit hard and time consuming process but one can learn a lot about u-boot bootloader functionalities. To sum up what we did was understood our memomry mappings, compiled our stuff and put everything inside a single file which will be used as emulated NOR Flash inside Qemu. And from flash memory bootloader will load stuff back into the RAM as we decided. If you liked this blog post please share it as much as you can so more people can learn this knowledge. Don&rsquo;t forget to follow me on twitter as well for latest updates from me <a href="https://twitter.com/cjhackerz">@cjhackerz</a></p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/">
+                <span class="button__text">WriteUp: First ever real like simulated IoT security challenge</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© 2020, All rights reserved to Chirag Jariwala</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://cjhackerz.net/assets/main.js"></script>
+<script src="https://cjhackerz.net/assets/prism.js"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-142682190-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+
+  
+</div>
+
+</body>
+</html>

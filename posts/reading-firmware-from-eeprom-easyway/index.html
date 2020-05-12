@@ -51,11 +51,12 @@ if (!doNotTrack) {
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Reading data from EEPROM without desoldering :: Chirag Jariwala">
-<meta property="og:description" content="Introduction In IoT/Hardware security it is common practice of dumping firmware/bootloader data inorder to perform reverse engineering for closed source system applications.
-Well known easiest way is to download .bin/.zip (packed firmware) files from device manufacturer&amp;rsquo;s website which they provide to end users for firmware upgrade operations. And later us hackers/security researchers throw these files to reverse engineering softwares such as binwalk to check it&amp;rsquo;s contents and extract the needed stuff." />
+<meta property="og:description" content="EEPROM is read-only non-volatile memory whose contents can be erased and reprogrammed using a pulsed voltage often time used in embedded systems (network routers) and smart IoT devices. EEPROM holds firmware data and bootloader, in this post we will explore non-destructive way to read data from EEPROM for security assements purposes." />
 <meta property="og:url" content="https://cjhackerz.net/posts/reading-firmware-from-eeprom-easyway/" />
 <meta property="og:site_name" content="Reading data from EEPROM without desoldering" />
-<meta property="og:image" content="https://cjhackerz.net/img/IMG_20190716_121835.jpg">
+
+  <meta property="og:image" content="https://cjhackerz.net/img/IMG_20190716_121835.jpg">
+
 <meta property="og:image:width" content="2048">
 <meta property="og:image:height" content="1024">
 
@@ -271,32 +272,34 @@ Well known easiest way is to download .bin/.zip (packed firmware) files from dev
 <p><em>This article was original written while doing internship at <a href="https://securelayer7.net">Securelayer7</a> and idea was suggested by my mentor <a href="https://twitter.com/shubhamtc">Shubham Chougule</a></em></p>
 
       </div></div>
+
   
-  <div class="pagination">
+  
+<div class="pagination">
     <div class="pagination__title">
-      <span
-        class="pagination__title-h">Read other posts</span>
-      <hr />
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
     </div>
     <div class="pagination__buttons">
-      
-      <span class="button previous">
-        <a href="https://cjhackerz.net/posts/can-bus_protocol_pentesting/">
-          <span class="button__icon">←</span>
-          <span class="button__text">CAN-bus protocol pentesting and forensics</span>
-        </a>
-      </span>
-      
-      
-      <span class="button next">
-        <a href="https://cjhackerz.net/posts/uart-buspirate/">
-          <span class="button__text">UART using Bus Pirate</span>
-          <span class="button__icon">→</span>
-        </a>
-      </span>
-      
+        
+        <span class="button previous">
+            <a href="https://cjhackerz.net/posts/can-bus_protocol_pentesting/">
+                <span class="button__icon">←</span>
+                <span class="button__text">CAN-bus protocol pentesting and forensics</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://cjhackerz.net/posts/uart-buspirate/">
+                <span class="button__text">UART using Bus Pirate</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
-  </div>
+</div>
+
   
 
   
@@ -310,7 +313,7 @@ Well known easiest way is to download .bin/.zip (packed firmware) files from dev
   <div class="footer__inner">
     
       <div class="copyright copyright--user">
-        <span>© 2019, All rights reserved to Chirag Jariwala</span>
+        <span>© 2020, All rights reserved to Chirag Jariwala</span>
     
         <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
       </div>

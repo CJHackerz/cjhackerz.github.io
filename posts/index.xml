@@ -6,11 +6,20 @@
     <description>Recent content in Posts on Chirag Jariwala</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© 2019, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <copyright>© 2020, All rights reserved to Chirag Jariwala</copyright>
+    <lastBuildDate>Mon, 11 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Understanding how bootloader works by creating your own firmware</title>
+      <link>https://cjhackerz.net/posts/understanding-how-bootloader-works-by-creating-your-own-firmware/</link>
+      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/understanding-how-bootloader-works-by-creating-your-own-firmware/</guid>
+      <description>Getting started with memory layouts So in previous blog post on solving CTF challenge created by me on real alike firmware, I did not touched subject of u-boot bootloader in depth and how such firmware was created in first place. Welcome back here again today you will see steps to create your own firmware for qemu and making it work with u-boot. Many of the stuff you might have encoutered during computer science class and you will be amazed how the concepts of fundamental system architecture and operating system works in action.</description>
+    </item>
     
     <item>
       <title>WriteUp: First ever real like simulated IoT security challenge</title>

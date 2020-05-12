@@ -50,10 +50,12 @@ if (!doNotTrack) {
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="ARM and MIPS emulated lab setup for IoT security in Qemu :: Chirag Jariwala">
-<meta property="og:description" content="Backstory After poking around entire internet for a month, I finally managed to learn how Qemu works in general. There already lots of tutorial out there on how to setup ARM and MIPS based machines inside Qemu but I personally feel those are incomplete guides and does not touch the subject deeply. So that&amp;rsquo;s exact reason for wirting this article giving clear explanation about everything you will need to know inorder to have ARM and MIPS based Qemu virtual machine with full NAT networking support." />
+<meta property="og:description" content="A newbie friendly tutorial to setup dedicated virtual machine for IoT security inside Qemu with help of virt and malta CPU" />
 <meta property="og:url" content="https://cjhackerz.net/posts/arm-emulated-environment-iotsec-qemu/" />
 <meta property="og:site_name" content="ARM and MIPS emulated lab setup for IoT security in Qemu" />
-<meta property="og:image" content="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png">
+
+  <meta property="og:image" content="https://cjhackerz.net/img/2019-09-26-165748_939x1030_scrot.png">
+
 <meta property="og:image:width" content="2048">
 <meta property="og:image:height" content="1024">
 
@@ -522,32 +524,34 @@ qemu-system-mipsel -M malta -m <span style="color:#ae81ff">2048</span> <span sty
 <p>[4] =&gt; <a href="https://wiki.qemu.org/Documentation/Networking">https://wiki.qemu.org/Documentation/Networking</a></p>
 
       </div></div>
+
   
-  <div class="pagination">
+  
+<div class="pagination">
     <div class="pagination__title">
-      <span
-        class="pagination__title-h">Read other posts</span>
-      <hr />
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
     </div>
     <div class="pagination__buttons">
-      
-      <span class="button previous">
-        <a href="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/">
-          <span class="button__icon">←</span>
-          <span class="button__text">An overview on writing ARM shellcode</span>
-        </a>
-      </span>
-      
-      
-      <span class="button next">
-        <a href="https://cjhackerz.net/posts/can-bus_protocol_pentesting/">
-          <span class="button__text">CAN-bus protocol pentesting and forensics</span>
-          <span class="button__icon">→</span>
-        </a>
-      </span>
-      
+        
+        <span class="button previous">
+            <a href="https://cjhackerz.net/posts/an-overview_writing-arm-shellcode/">
+                <span class="button__icon">←</span>
+                <span class="button__text">An overview on writing ARM shellcode</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://cjhackerz.net/posts/can-bus_protocol_pentesting/">
+                <span class="button__text">CAN-bus protocol pentesting and forensics</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
-  </div>
+</div>
+
   
 
   
@@ -561,7 +565,7 @@ qemu-system-mipsel -M malta -m <span style="color:#ae81ff">2048</span> <span sty
   <div class="footer__inner">
     
       <div class="copyright copyright--user">
-        <span>© 2019, All rights reserved to Chirag Jariwala</span>
+        <span>© 2020, All rights reserved to Chirag Jariwala</span>
     
         <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
       </div>
