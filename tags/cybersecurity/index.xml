@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2020, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 21 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/cybersecurity/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>My review on Centrifuge a firmware analysis platform by ReFirm Labs</title>
+      <link>https://cjhackerz.net/posts/my-review-on-centrifuge-firmware-analysis-platform/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/my-review-on-centrifuge-firmware-analysis-platform/</guid>
+      <description>Story It was yet another boring day in COVID-19 lockdown and I was checking my Linkedin. Did not knew small surprise connection request is waiting. It was from one of the Co-founders of ReFirm Labs Mr. Terry Dunlap. Without hesitation I accepted request and started talking, he has very humble personality with years of experience in cybersecurity. In between conversation I mentioned binwalk and that I use it for day to day manual firmware analysis.</description>
+    </item>
     
     <item>
       <title>Reading data from EEPROM without desoldering</title>

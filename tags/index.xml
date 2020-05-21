@@ -7,10 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2020, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Mon, 11 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 21 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cybersecurity</title>
+      <link>https://cjhackerz.net/tags/cybersecurity/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/cybersecurity/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IoT</title>
+      <link>https://cjhackerz.net/tags/iot/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/iot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Review</title>
+      <link>https://cjhackerz.net/tags/review/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/tags/review/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Hardware</title>
@@ -18,15 +45,6 @@
       <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/hardware/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>IoT</title>
-      <link>https://cjhackerz.net/tags/iot/</link>
-      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://cjhackerz.net/tags/iot/</guid>
       <description></description>
     </item>
     
@@ -81,15 +99,6 @@
       <pubDate>Sat, 17 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://cjhackerz.net/tags/automotive/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cybersecurity</title>
-      <link>https://cjhackerz.net/tags/cybersecurity/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://cjhackerz.net/tags/cybersecurity/</guid>
       <description></description>
     </item>
     

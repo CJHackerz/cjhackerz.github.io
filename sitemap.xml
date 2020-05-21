@@ -4,26 +4,41 @@
   
   <url>
     <loc>https://cjhackerz.net/</loc>
-    <lastmod>2020-05-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://cjhackerz.net/tags/hardware/</loc>
-    <lastmod>2020-05-11T00:00:00+00:00</lastmod>
+    <loc>https://cjhackerz.net/tags/cybersecurity/</loc>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/tags/iot/</loc>
-    <lastmod>2020-05-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/posts/my-review-on-centrifuge-firmware-analysis-platform/</loc>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/posts/</loc>
-    <lastmod>2020-05-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/review/</loc>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://cjhackerz.net/tags/</loc>
+    <lastmod>2020-05-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cjhackerz.net/tags/hardware/</loc>
     <lastmod>2020-05-11T00:00:00+00:00</lastmod>
   </url>
   
@@ -80,11 +95,6 @@
   <url>
     <loc>https://cjhackerz.net/posts/can-bus_protocol_pentesting/</loc>
     <lastmod>2019-08-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cjhackerz.net/tags/cybersecurity/</loc>
-    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
   </url>
   
   <url>
