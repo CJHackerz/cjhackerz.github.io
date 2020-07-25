@@ -5,7 +5,7 @@
     <title>WriteUp: First ever real like simulated IoT security challenge :: Chirag Jariwala — Cyber security analyst and IoT security researcher</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Few months ago I had released a challenge on IoT/Embeded security and put it up on various places inorder to allow people to solve it. Sadly long wait is over and now covid-19 in on rise gloablly there is no interests to solve it even in quarantine. So to give justice to my work I am putting up this write up together which you can follow along to learn and solve my challenge." />
 <meta name="keywords" content="cjhackerz" />
 <meta name="robots" content="noodp" />
@@ -134,10 +134,10 @@ if (!doNotTrack) {
   <h1 class="post-title">
     <a href="https://cjhackerz.net/posts/writeup-first-ever-real-like-simulated-iot-security-challenge/">WriteUp: First ever real like simulated IoT security challenge</a></h1>
   <div class="post-meta">
-      
-    <span class="post-date">
-      2020-03-22
-    </span>
+    
+      <span class="post-date">
+        2020-03-22 
+      </span>
     
     
     <span class="post-author">::
@@ -161,7 +161,9 @@ if (!doNotTrack) {
   
 
   
-  <img src="https://cjhackerz.net/img/2020-01-29-150859_1920x1055_scrot.png" class="post-cover" />
+    <img src="https://cjhackerz.net/img/2020-01-29-150859_1920x1055_scrot.png" class="post-cover" alt="WriteUp: First ever real like simulated IoT security challenge" />
+  
+
   
 
   <div class="post-content"><div>
@@ -206,7 +208,7 @@ bin  etc   lib    linuxrc  mnt  proc  run   sys  usr
 dev  init  lib32  media    opt  root  sbin  tmp  var
 </code></pre><h2 id="filesystem-analysis">Filesystem analysis<a href="#filesystem-analysis" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="busybox-init">Busybox init<a href="#busybox-init" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<p>As I have clearly mentioned in README.txt file when system boots our flag file is getting encrypted. Ask yourself a simple question at this point &ldquo;<em>When linux boots what is that first program with PID 1 responsible to start all other services, tasks and user space programs?</em>&quot;. Init system obviously and since this is embeded system we are dealing with, it will be busybox init system. By default busybox init system excutes simple shell scripts situated at etc/init.d/</p>
+<p>As I have clearly mentioned in README.txt file when system boots our flag file is getting encrypted. Ask yourself a simple question at this point &ldquo;<em>When linux boots what is that first program with PID 1 responsible to start all other services, tasks and user space programs?</em>&rdquo;. Init system obviously and since this is embeded system we are dealing with, it will be busybox init system. By default busybox init system excutes simple shell scripts situated at etc/init.d/</p>
 <pre><code class="language-console" data-lang="console">ls etc/init.d/
 S01syslogd  S02klogd  S02sysctl  S20urandom  S40network  S50filevault  rcK  rcS
 </code></pre><p>You can see the big gotcha here with presence of S50filevault shell script file. Filevault that userspace program responsbile for flag file encryption. Here you can see file naming pattern for these init scripts S[number]file_name. Basically when busybox init start running scripting with lower to higher number. So S01syslogd will be executed first and S02klogd next. Like wise S50filevault in last before that S40network will get executed.</p>

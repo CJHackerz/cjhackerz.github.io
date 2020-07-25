@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© 2020, All rights reserved to Chirag Jariwala</copyright>
-    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cjhackerz.net/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Journey from nothing to OSCP</title>
+      <link>https://cjhackerz.net/posts/journey-from-nothing-to-oscp/</link>
+      <pubDate>Tue, 30 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://cjhackerz.net/posts/journey-from-nothing-to-oscp/</guid>
+      <description>startx Well if your have been into hacking since around 2012 you know the above headline is a linux command. I got taste of hacking/cybersecurity when I was very young teen. Teen from a middle class family who can&amp;rsquo;t afford to have internet connection over WiFi. Since in early days in India before Jio was a thing internet connection prices were high and one can only go to cyber cafe for 2-3 hours to surf internet.</description>
+    </item>
     
     <item>
       <title>WriteUp: First ever real like simulated IoT security challenge</title>
